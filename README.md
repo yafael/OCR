@@ -47,3 +47,8 @@ The project is divided into features, or tasks. We will manage tasks using the f
 4. Team members will comment on the Github pull request to suggest revisions.
 5. Once approved, merge the branch with the master branch.
 
+#### Other Guidelines
+- Make sure to have good descriptions for your commits. 
+- Comments are appreciated.
+- Balance code readability with concision.
+
