@@ -1,39 +1,26 @@
 # Optical Character Recognition
 
-## Project Proposal
+This program recognizes handwritten Latin characters and digits using criteria obtained from training data.
 
-Subject to change.
+## How to Run
 
-### Description
-1. Create set of training data for Latin characters based on the Arial font.
-2. Create testing data consisting of handwritten Latin characters.
-3. Develop algorithm that compares testing data to training data to identify characters.
-4. Develop test script that returns accuracy of character recognition.
+### Setup
+Download the following packages
+- Python 2.7.X
+- OpenCV 2.4.X
+- Numpy 1.9.X
+- Matplotlib 1.3.X
 
-#### Additional Constraints
-- Words must be in English.
+Make sure all the versions are 32-bit.
 
-#### Stretch Goals
-- Translate words into different languages.
-- Synthesize speech from words.
+Download the [get-pip.py](https://bootstrap.pypa.io/get-pip.py) Python script and put it in your C:/Python27/Scripts folder. Run it using "python get-pip.py".
 
-#### Evaluation
-Number of characters correctly recognized.
+In the Scripts folder, run the following commands:
+> pip install python-dateutil
+> pip install pyparsing
 
-### Division of Tasks
-#### Kyla
-- Create training data. 
-- Write algorithm to read training data and detect features and patterns and so forth.
-- Write script to evaluate correctness.
+You should be ready to go.
 
-#### Edrienne
-- Create testing data. 
-- Write algorithm to read testing data and handle imperfections in test data to feed into evaluator.
-- Write script to evaluate correctness.
-
-#### Yash
-- Write algorithm that does feature detection/matching on testing data to check what characters are.
-- Anything else.
 
 ## Workflow
 
