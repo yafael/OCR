@@ -13,10 +13,12 @@ Download the following packages
 
 Make sure all the versions are 32-bit.
 
-Download the [get-pip.py](https://bootstrap.pypa.io/get-pip.py) Python script and put it in your C:/Python27/Scripts folder. Run it using "python get-pip.py".
+Download the [get-pip.py](https://bootstrap.pypa.io/get-pip.py) Python script and put it in your C:/Python27/Scripts folder. From the Scripts directory, run
+> python get-pip
 
 In the Scripts folder, run the following commands:
 > pip install python-dateutil
+
 > pip install pyparsing
 
 You should be ready to go.
