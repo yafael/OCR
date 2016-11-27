@@ -3,12 +3,14 @@
 # Description: Tests the trained data on test images
 # TODO: Method docs and refactoring
 
+import math
 import cv2
 import numpy as np
 import operator
 import os
 
 import Trainer
+import CharacterHelper
 
 # Constants
 MIN_CONTOUR_AREA = 100
@@ -46,6 +48,32 @@ class ContourWithData():
         if self.fltArea < MIN_CONTOUR_AREA: return False
         return True
 
+class Character():
+    """
+    Represents a single character
+    """
+
+    def __init__(self, _contour):
+        self.contour = _contour
+
+        self.boundingRect = cv2.boundingRect(self.contour)
+
+        [intX, intY, intWidth, intHeight] = self.boundingRect
+
+        self.intBoundingRectX = intX
+        self.intBoundingRectY = intY
+        self.intBoundingRectWidth = intWidth
+        self.intBoundingRectHeight = intHeight
+
+        self.intBoundingRectArea = self.intBoundingRectWidth * self.intBoundingRectHeight
+
+        self.intCenterX = (self.intBoundingRectX + self.intBoundingRectX + self.intBoundingRectWidth) / 2
+        self.intCenterY = (self.intBoundingRectY + self.intBoundingRectY + self.intBoundingRectHeight) / 2
+
+        self.fltDiagonalSize = math.sqrt((self.intBoundingRectWidth ** 2) + (self.intBoundingRectHeight ** 2))
+
+        self.fltAspectRatio = float(self.intBoundingRectWidth) / float(self.intBoundingRectHeight)
+
 def __readImage(imgFilename):
     """
     Returns image with specified fileName
@@ -80,7 +108,6 @@ def __preprocessImage(img):
     imgThreshCopy = imgThresh.copy()  # make a copy of the thresh image, this in necessary b/c findContours modifies the image
 
     return imgThresh
-
 
 def __getValidContoursWithData(imgThresh):
     """
@@ -153,13 +180,69 @@ def __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithDat
 
     return strFinalString
 
+def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest):
+    """
+    Returns String of characters that correspond to the contours
+    :param imgTest:
+    :param imgThresh:
+    :param validContoursWithData:
+    :param kNearest:
+    :return: strFinalString
+    """
+    strFinalString = ""         # declare final string, this will have the final number sequence by the end of the program
+
+    characterList = []
+    for contourWithData in validContoursWithData:
+        # Draw a green rect around the current char
+        character = Character(contourWithData.npaContour)
+        characterList.append(character)
+
+    # Get mean distance between characters
+    nextChar = ""
+    distanceList = [];
+    for i in range(len(characterList) - 1):
+        character = characterList[i]
+        nextChar = characterList[i + 1]
+        distance = CharacterHelper.getDistanceBetween(nextChar, character)
+        distanceList.append(distance)
+
+    meanDistance = np.mean(distanceList)
+    stdDev = np.std(distanceList)
+
+    nextChar = ""
+    for i in range(len(characterList)):
+        character = characterList[i]
+
+        imgROI = imgThresh[character.intBoundingRectY: character.intBoundingRectY + character.intBoundingRectHeight,
+                     character.intBoundingRectX: character.intBoundingRectX + character.intBoundingRectWidth]
+        imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+        npaROIResized = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+        npaROIResized = np.float32(npaROIResized)
+
+        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k=1)
+
+        # Get character
+        strCurrentChar = str(chr(int(npaResults[0][0])))
+        strFinalString = strFinalString + strCurrentChar
+
+        # Detect space
+        if ( i < len(characterList) - 1):
+            nextChar = characterList[i + 1]
+            distance = CharacterHelper.getDistanceBetween(nextChar, character)
+            if (abs(distance - meanDistance) > stdDev):
+                strFinalString = strFinalString + " "
+
+
+    return strFinalString
+
 def main():
     # Trainer.trainData("training_letters.png")
     kNearest = Trainer.getTrainedKNN()
-    imgTest = __readImage("testimage.png")
+    imgTest = __readImage("real2.jpg")
     imgThresh = __preprocessImage(imgTest)
     validContoursWithData = __getValidContoursWithData(imgThresh)
     strFinalString = __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
+    strFinalString = __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
 
     print "\n" + strFinalString + "\n" # string of characters in image
     cv2.imshow("imgTest", imgTest) # image with green boxes drawn around characters

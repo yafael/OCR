@@ -13,7 +13,6 @@ MIN_CONTOUR_AREA = 10
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-
 # ====================
 # takes in image and finds all contours and prints out words it finds
 # ====================
@@ -68,7 +67,7 @@ def findContours(testFileName):
 			finalString = finalString + currentChar
 			
 	print "\n" + finalString + "\n"
-	cv2.imshow("imgTestingNumbers", testImage)
+	cv2.imshow("testImage", testImage)
 	cv2.waitKey(0)
 
 	cv2.destroyAllWindows()
@@ -76,4 +75,4 @@ def findContours(testFileName):
 	return finalString
 
 
-findContours("courier_test.png")
+findContours("testdata/courier_test.png")
