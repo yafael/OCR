@@ -18,8 +18,18 @@ RESIZED_IMAGE_HEIGHT = 30
 # ====================
 def findContours(testFileName):
 	# load classifications and test data
-	classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
-	trainingData = np.loadtxt("training_data.txt", np.float32)
+	try:
+		classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
+	except:
+		print("Can't find classification labels")
+	
+	try:
+		trainingData = np.loadtxt("training_data.txt", np.float32)
+	except:
+		print("Can't find training data")
+		
+	print(len(classificationLabels))
+	print(len(trainingData))
 	
 	# reshape classifications to 1d
 	classificationLabels = classificationLabels.reshape((classificationLabels.size, 1))
@@ -27,17 +37,10 @@ def findContours(testFileName):
 	# create KNearest and train
 	kNearest = cv2.KNearest()
 	kNearest.train(trainingData, classificationLabels)
-	
-	
-	# declare empty lists
-	contours = []
-	
+		
 	testImage = cv2.imread(testFileName)
 	testImGray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
-	testImBlurred = cv2.GaussianBlur(testImGray, (5, 5), 0)
-	# Filter image from grayscale to black and white
-	imgThresh = cv2.adaptiveThreshold(testImBlurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
-	# make a copy
+	imgThresh = cv2.adaptiveThreshold(testImGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
 	imgThreshCopy = imgThresh.copy() 
 	
 	contours, heierachy = cv2.findContours(imgThreshCopy,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -59,7 +62,8 @@ def findContours(testFileName):
 			letter = letter.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 			letter = np.float32(letter)
 			
-			ret, result, neighbors, dist = kNearest.find_nearest(letter, k=1)
+			ret, result, neighbors, dist = kNearest.find_nearest(letter, k=2)
+			
 			
 			currentChar = str(chr(int(ret)))
 			
@@ -75,4 +79,4 @@ def findContours(testFileName):
 	return finalString
 
 
-findContours("testdata/courier_test.png")
+findContours("testdata/couriernew_test.png")
