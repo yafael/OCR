@@ -7,7 +7,7 @@ import cv2
 import sortContours as sort
 
 # constants
-MIN_CONTOUR_AREA = 10
+MIN_CONTOUR_AREA = 25
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
@@ -73,15 +73,19 @@ def classifyImage(trainingFileName, classificationArray):
 # ====================
 # Run main methods
 # ====================
-couriernew_lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
+lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
 	ord('k'), ord('l'), ord('m'), ord('n'), ord('o'), ord('p'), ord('q'), ord('r'), ord('s'), ord('t'),
 	ord('u'), ord('v'), ord('w'), ord('x'), ord('y'), ord('z')]
-couriernew_uppercase_labels = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'),
+uppercase_labels = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'),
 	ord('K'), ord('L'), ord('M'), ord('N'), ord('O'), ord('P'), ord('Q'), ord('R'), ord('S'), ord('T'),
 	ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
-couriernew_numbers_labels = [ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), ord('8'), ord('9')]
+numbers_labels = [ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), ord('8'), ord('9')]
 
-classifyImage("traindata/couriernew_lowercase.png", couriernew_lowercase_labels)
-classifyImage("traindata/couriernew_uppercase.png", couriernew_uppercase_labels)
-classifyImage("traindata/couriernew_numbers.png", couriernew_numbers_labels)
+classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
+classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
+classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+
+classifyImage("traindata/arial_lowercase.png", lowercase_labels)
+classifyImage("traindata/arial_uppercase.png", uppercase_labels)
+classifyImage("traindata/arial_numbers.png", numbers_labels)
 

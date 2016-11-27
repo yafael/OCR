@@ -9,7 +9,7 @@ import sortContours as sort
 import math
 
 # Constants
-MIN_CONTOUR_AREA = 10
+MIN_CONTOUR_AREA = 100
 
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
@@ -39,8 +39,10 @@ def findContours(testFileName):
 		trainingData = np.loadtxt("training_data.txt", np.float32)
 	except:
 		print("Can't find training data")
-		
+
+	print("num labels: ")		
 	print(len(classificationLabels))
+	print("num training: ")		
 	print(len(trainingData))
 	
 	# reshape classifications to 1d
@@ -94,7 +96,7 @@ def findContours(testFileName):
 		letter = letter.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 		letter = np.float32(letter)
 		
-		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=2)
+		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=3)
 		
 		currentChar = str(chr(int(ret)))
 		finalString = finalString + currentChar
@@ -116,3 +118,6 @@ def findContours(testFileName):
 
 
 findContours("testdata/couriernew_test.png")
+findContours("testdata/couriernew_helloworld.png")
+findContours("testdata/tnr_helloworld.png")
+findContours("handwrittendata/real4.jpg")
