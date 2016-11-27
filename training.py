@@ -56,7 +56,7 @@ def getCorrespondingLetter(image):
 	knn.train(train, train_labels)
 	
 	testimg = image[:,:].reshape(-1, 400).astype(np.float32)
-	ret, result, neighbors, dist = knn.find_nearest(testing, k=5)
+	ret, result, neighbors, dist = knn.find_nearest(testimg, k=5)
 	return result
 
 
@@ -117,3 +117,6 @@ generateLetterTrainingData()
 testLetters()
 createDigitTrainingData()
 testDigits()
+
+testaimage = cv2.imread('testingdata/a.png', cv2.CV_LOAD_IMAGE_GRAYSCALE)	
+print(getCorrespondingLetter(testaimage))
