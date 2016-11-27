@@ -26,7 +26,7 @@ def sortContours(point1):
 
 def main():
 		# read in training numbers image
-    imgTrainingNumbers = cv2.imread("training_chars.png")
+    imgTrainingNumbers = cv2.imread("training_letters.png")
 		# get grayscale image
     imgGray = cv2.cvtColor(imgTrainingNumbers, cv2.COLOR_BGR2GRAY)          
     # filter image from grayscale to black and white
