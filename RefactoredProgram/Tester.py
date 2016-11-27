@@ -74,6 +74,7 @@ class Character():
 
         self.fltAspectRatio = float(self.intBoundingRectWidth) / float(self.intBoundingRectHeight)
 
+
 def __readImage(imgFilename):
     """
     Returns image with specified fileName
@@ -123,6 +124,8 @@ def __getValidContoursWithData(imgThresh):
                                                  # input image, make sure to use a copy since the function will modify this image in the course of finding contours
                                                  cv2.RETR_EXTERNAL,  # retrieve the outermost contours only
                                                  cv2.CHAIN_APPROX_SIMPLE)  # compress horizontal, vertical, and diagonal segments and leave only their end points
+    npaContours.sort(key=lambda x:Trainer.__sortContours(x))
+
 
     # Create ContourWithData objects for each contour
     for npaContour in npaContours:  # for each contour
@@ -137,9 +140,6 @@ def __getValidContoursWithData(imgThresh):
     for contourWithData in allContoursWithData:  # for all contours
         if contourWithData.checkIfContourIsValid():  # check if valid
             validContoursWithData.append(contourWithData)  # if so, append to valid contour list
-            # end if
-
-    validContoursWithData.sort(key=operator.attrgetter("intRectX"))  # sort contours from left to right
 
     return validContoursWithData
 
@@ -238,7 +238,8 @@ def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, 
 def main():
     # Trainer.trainData("training_letters.png")
     kNearest = Trainer.getTrainedKNN()
-    imgTest = __readImage("real2.jpg")
+    #imgTest = __readImage("../handwrittendata/real4.jpg")
+    imgTest = __readImage("testimage2.png");
     imgThresh = __preprocessImage(imgTest)
     validContoursWithData = __getValidContoursWithData(imgThresh)
     strFinalString = __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
@@ -252,10 +253,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
