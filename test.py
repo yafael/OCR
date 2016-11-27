@@ -1,4 +1,5 @@
-# TrainAndTest.py
+# Author: Kyla Bouldin, Yashvardhan Gusani
+# Description: Tests the trained data on test images
 
 import cv2
 import numpy as np
@@ -14,7 +15,7 @@ RESIZED_IMAGE_HEIGHT = 30
 ###################################################################################################
 class ContourWithData():
 
-    # member variables ############################################################################
+    # Member variables ############################################################################
     npaContour = None           # contour
     boundingRect = None         # bounding rect for contour
     intRectX = 0                # bounding rect top left corner x location
@@ -55,10 +56,11 @@ def main():
         return
     # end try
 
-    npaClassifications = npaClassifications.reshape((npaClassifications.size, 1))       # reshape numpy array to 1d, necessary to pass to call to train
+    # Reshape numpy array to 1d, necessary to pass to call to train
+    npaClassifications = npaClassifications.reshape((npaClassifications.size, 1))
 
-    kNearest = cv2.KNearest()                  # instantiate KNN object
-
+    # Instantiate KNN and train against flattened images and classifications.
+    kNearest = cv2.KNearest()
     kNearest.train(npaFlattenedImages, npaClassifications)
 
     imgTestingNumbers = cv2.imread("testimage.png")          # read in testing numbers image
@@ -69,10 +71,10 @@ def main():
         return                                              # and exit function (which exits program)
     # end if
 
-    imgGray = cv2.cvtColor(imgTestingNumbers, cv2.COLOR_BGR2GRAY)       # get grayscale image
-    imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                    # blur
+    imgGray = cv2.cvtColor(imgTestingNumbers, cv2.COLOR_BGR2GRAY)   # get grayscale image
+    imgBlurred = cv2.GaussianBlur(imgGray, (5,5), 0)                # gaussian blur
 
-                                                        # filter image from grayscale to black and white
+    # Filter image from grayscale to black and white
     imgThresh = cv2.adaptiveThreshold(imgBlurred,                           # input image
                                       255,                                  # make pixels that pass the threshold full white
                                       cv2.ADAPTIVE_THRESH_GAUSSIAN_C,       # use gaussian rather than mean, seems to give better results
@@ -106,30 +108,31 @@ def main():
     strFinalString = ""         # declare final string, this will have the final number sequence by the end of the program
 
     for contourWithData in validContoursWithData:            # for each contour
-                                                # draw a green rect around the current char
+        # Draw a green rect around the current char
         cv2.rectangle(imgTestingNumbers,                                        # draw rectangle on original testing image
                       (contourWithData.intRectX, contourWithData.intRectY),     # upper left corner
                       (contourWithData.intRectX + contourWithData.intRectWidth, contourWithData.intRectY + contourWithData.intRectHeight),      # lower right corner
                       (0, 255, 0),              # green
                       2)                        # thickness
 
-        imgROI = imgThresh[contourWithData.intRectY : contourWithData.intRectY + contourWithData.intRectHeight,     # crop char out of threshold image
+        # crop char out of threshold image
+        imgROI = imgThresh[contourWithData.intRectY : contourWithData.intRectY + contourWithData.intRectHeight,
                            contourWithData.intRectX : contourWithData.intRectX + contourWithData.intRectWidth]
-
-        imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))             # resize image, this will be more consistent for recognition and storage
-
-        npaROIResized = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))      # flatten image into 1d numpy array
-
-        npaROIResized = np.float32(npaROIResized)       # convert from 1d numpy array of ints to 1d numpy array of floats
-
-        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k = 1)     # call KNN function find_nearest
-
-        strCurrentChar = str(chr(int(npaResults[0][0])))                                             # get character from results
-
-        strFinalString = strFinalString + strCurrentChar            # append current char to full string
+        # resize image, this will be more consistent for recognition and storage
+        imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+        # flatten image into 1d numpy array
+        npaROIResized = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+        # convert from 1d numpy array of ints to 1d numpy array of floats
+        npaROIResized = np.float32(npaROIResized)
+        # call KNN function find_nearest
+        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k = 1)
+        # get character from results
+        strCurrentChar = str(chr(int(npaResults[0][0])))
+        # append current char to full string
+        strFinalString = strFinalString + strCurrentChar
     # end for
 
-    print "\n" + strFinalString + "\n"                  # show the full string
+    print "\n" + strFinalString + "\n" # show the full string
 
     cv2.imshow("imgTestingNumbers", imgTestingNumbers)      # show input image with green boxes drawn around found digits
     cv2.waitKey(0)                                          # wait for user key press
@@ -142,7 +145,6 @@ def main():
 if __name__ == "__main__":
     main()
 # end if
-
 
 
 
