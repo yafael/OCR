@@ -3,6 +3,7 @@
 # Description: Tests the trained data on test images
 # TODO: Method docs and refactoring
 
+import math
 import cv2
 import numpy as np
 import operator
@@ -46,6 +47,32 @@ class ContourWithData():
         if self.fltArea < MIN_CONTOUR_AREA: return False
         return True
 
+class Character():
+    """
+    Represents a single character
+    """
+
+    def __init__(self, _contour):
+        self.contour = _contour
+
+        self.boundingRect = cv2.boundingRect(self.contour)
+
+        [intX, intY, intWidth, intHeight] = self.boundingRect
+
+        self.intBoundingRectX = intX
+        self.intBoundingRectY = intY
+        self.intBoundingRectWidth = intWidth
+        self.intBoundingRectHeight = intHeight
+
+        self.intBoundingRectArea = self.intBoundingRectWidth * self.intBoundingRectHeight
+
+        self.intCenterX = (self.intBoundingRectX + self.intBoundingRectX + self.intBoundingRectWidth) / 2
+        self.intCenterY = (self.intBoundingRectY + self.intBoundingRectY + self.intBoundingRectHeight) / 2
+
+        self.fltDiagonalSize = math.sqrt((self.intBoundingRectWidth ** 2) + (self.intBoundingRectHeight ** 2))
+
+        self.fltAspectRatio = float(self.intBoundingRectWidth) / float(self.intBoundingRectHeight)
+
 def __readImage(imgFilename):
     """
     Returns image with specified fileName
@@ -80,7 +107,6 @@ def __preprocessImage(img):
     imgThreshCopy = imgThresh.copy()  # make a copy of the thresh image, this in necessary b/c findContours modifies the image
 
     return imgThresh
-
 
 def __getValidContoursWithData(imgThresh):
     """
@@ -152,6 +178,45 @@ def __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithDat
         strFinalString = strFinalString + strCurrentChar
 
     return strFinalString
+
+def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest):
+    """
+    Returns String of characters that correspond to the contours
+    :param imgTest:
+    :param imgThresh:
+    :param validContoursWithData:
+    :param kNearest:
+    :return: strFinalString
+    """
+    strFinalString = ""         # declare final string, this will have the final number sequence by the end of the program
+
+    for contourWithData in validContoursWithData:            # for each contour
+        # Draw a green rect around the current char
+        cv2.rectangle(imgTest,                                        # draw rectangle on original testing image
+                      (contourWithData.intRectX, contourWithData.intRectY),     # upper left corner
+                      (contourWithData.intRectX + contourWithData.intRectWidth, contourWithData.intRectY + contourWithData.intRectHeight),      # lower right corner
+                      (0, 255, 0),              # green
+                      2)                        # thickness
+
+        # crop char out of threshold image
+        imgROI = imgThresh[contourWithData.intRectY : contourWithData.intRectY + contourWithData.intRectHeight,
+                           contourWithData.intRectX : contourWithData.intRectX + contourWithData.intRectWidth]
+        # resize image, this will be more consistent for recognition and storage
+        imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+        # flatten image into 1d numpy array
+        npaROIResized = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+        # convert from 1d numpy array of ints to 1d numpy array of floats
+        npaROIResized = np.float32(npaROIResized)
+        # call KNN function find_nearest
+        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k = 1)
+        # get character from results
+        strCurrentChar = str(chr(int(npaResults[0][0])))
+        # append current char to full string
+        strFinalString = strFinalString + strCurrentChar
+
+    return strFinalString
+
+
 
 def main():
     # Trainer.trainData("training_letters.png")

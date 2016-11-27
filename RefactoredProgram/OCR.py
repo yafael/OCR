@@ -50,7 +50,7 @@ def main():
     # ISSUE: For all programs, not just mine. Training data produces blank
     # classifications.txt and flattened_images.txt files
     
-    img = __readNaturalImage("1.png")
+    img = __readNaturalImage("real2.jpg")
     candidateTextRegions = TextRegionFinder.getCandidateTextRegions(img)
     candidateTextRegions = CharacterHelper.filterCandidateTextRegions(candidateTextRegions)
 
