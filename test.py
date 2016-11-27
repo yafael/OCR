@@ -5,46 +5,23 @@ import cv2
 import numpy as np
 import operator
 import os
+import sortContours as sort
 
 # Constants
-MIN_CONTOUR_AREA = 100
+MIN_CONTOUR_AREA = 10
 
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
-
-# ====================
-# Custom function designed to sort the contours
-# ====================
-def sortContours(point1):
-    tolerance_factor = 60
-    mom1 = cv2.moments(point1)
-
-    x = int(mom1['m10'] / mom1['m00'])
-    y = int(mom1['m01'] / mom1['m00'])
-
-    return ((y // tolerance_factor) * tolerance_factor) * 100 + x
 
 
 # ====================
 # takes in image and finds all contours and prints out words it finds
 # ====================
 def findContours(testFileName):
-	# try to load classifications
-	try:
-		classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
-	except:
-		print "error, unable to open classification labels, exiting/n"
-		os.system("pause")
-		return
-
-	# try to load training data	
-	try:
-		trainingData = np.loadtxt("training_data.txt", np.float32)
-	except:
-		print "error, unable to open training data, exiting\n"
-		os.system("pause")
-		return
-			
+	# load classifications and test data
+	classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
+	trainingData = np.loadtxt("training_data.txt", np.float32)
+	
 	# reshape classifications to 1d
 	classificationLabels = classificationLabels.reshape((classificationLabels.size, 1))
 	
@@ -65,8 +42,7 @@ def findContours(testFileName):
 	imgThreshCopy = imgThresh.copy() 
 	
 	contours, heierachy = cv2.findContours(imgThreshCopy,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours.sort(key=lambda x: sortContours(x))
-	
+	contours.sort(key=lambda x: sort.sortContours(x))
 	
 	
 	finalString = ""
@@ -100,4 +76,4 @@ def findContours(testFileName):
 	return finalString
 
 
-findContours("testimage.png")
+findContours("courier_test.png")
