@@ -6,14 +6,14 @@ import numpy as np
 import cv2
 import argparse
 
-# constants
+# Constants
 MIN_CONTOUR_AREA = 0
 
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
 # ====================
-# Custom function designed to sort the contours
+# Custom function designed to sort the contours from left to right, top to bottom
 # ====================
 def sortContours(point1):
     tolerance_factor = 50
@@ -24,13 +24,16 @@ def sortContours(point1):
 
     return((y // tolerance_factor) * tolerance_factor) * 100 + x
 
+# ====================
+# Main function
+# ====================
 def main():
 	# Read in training numbers image
-    imgTrainingNumbers = cv2.imread("training_chars.png")
+    imgTrainingNumbers = cv2.imread("training_letters.png")
 	# Get grayscale image
     imgGray = cv2.cvtColor(imgTrainingNumbers, cv2.COLOR_BGR2GRAY)
     # Filter image from grayscale to black and white
-    imgThresh = cv2.adaptiveThreshold(imgGray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11, 2)
+    imgThresh = cv2.adaptiveThreshold(imgGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
     # Show threshold image for reference
     cv2.imshow("imgThresh", imgThresh)
 	# Copy thresh image for findCountours to modify
