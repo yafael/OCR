@@ -3,6 +3,8 @@
 # Description: Main program for OCR
 
 import os
+import numpy as np
+
 
 import DetectChars
 import DetectPlates
@@ -81,12 +83,9 @@ def main():
 ###################################################################################################
 def drawRedRectangleAroundPlate(imgOriginalScene, licPlate):
 
-    p2fRectPoints = cv2.boxPoints(licPlate.rrLocationOfPlateInScene)            # get 4 vertices of rotated rect
-
-    cv2.line(imgOriginalScene, tuple(p2fRectPoints[0]), tuple(p2fRectPoints[1]), SCALAR_RED, 2)         # draw 4 red lines
-    cv2.line(imgOriginalScene, tuple(p2fRectPoints[1]), tuple(p2fRectPoints[2]), SCALAR_RED, 2)
-    cv2.line(imgOriginalScene, tuple(p2fRectPoints[2]), tuple(p2fRectPoints[3]), SCALAR_RED, 2)
-    cv2.line(imgOriginalScene, tuple(p2fRectPoints[3]), tuple(p2fRectPoints[0]), SCALAR_RED, 2)
+    p2fRectPoints = cv2.cv.BoxPoints(licPlate.rrLocationOfPlateInScene)            # get 4 vertices of rotated rect
+    box = np.int0(p2fRectPoints)
+    cv2.drawContours(imgOriginalScene, [box], 0, (0, 0, 255), 2)
 # end function
 
 ###################################################################################################
