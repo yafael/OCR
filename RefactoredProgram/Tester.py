@@ -238,8 +238,8 @@ def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, 
 def main():
     # Trainer.trainData("training_letters.png")
     kNearest = Trainer.getTrainedKNN()
-    #imgTest = __readImage("../handwrittendata/real4.jpg")
-    imgTest = __readImage("testimage2.png");
+    imgTest = __readImage("../handwrittendata/real4.jpg")
+    # imgTest = __readImage("testimage2.png");
     imgThresh = __preprocessImage(imgTest)
     validContoursWithData = __getValidContoursWithData(imgThresh)
     strFinalString = __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
