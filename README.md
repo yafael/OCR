@@ -40,4 +40,5 @@ The project is divided into features, or tasks. We will manage tasks using the f
 - Make sure to have good descriptions for your commits. 
 - Comments are appreciated.
 - Balance code readability with concision.
+- Try and refer to Google's [Python Style Guide](https://google.github.io/styleguide/pyguide.html#Comments)
 
