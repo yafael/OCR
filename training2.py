@@ -36,18 +36,18 @@ def main():
     imgThreshCopy = imgThresh.copy()
 
     # find and sort contours
-    npaContours, npaHierarchy = cv2.findContours(imgThreshCopy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    npaContours.sort(key=lambda x: sortContours(x))
+    contours, hierarchy = cv2.findContours(imgThreshCopy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours.sort(key=lambda x: sortContours(x))
 
     # declare empty numpy array for each training data sample
-    sampleData = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+    trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
     # declare empty classifications list
     intClassifications = []
 
 		# show found contours using bounding rect
-    for npaContour in npaContours:
-        if cv2.contourArea(npaContour) > MIN_CONTOUR_AREA:
-            [intX, intY, intW, intH] = cv2.boundingRect(npaContour)
+    for contour in contours:
+        if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
+            [intX, intY, intW, intH] = cv2.boundingRect(contour)
             cv2.rectangle(imgTrainingNumbers,(intX, intY),(intX + intW, intY + intH),(255, 0, 255),1)
 
 						# USE THIS WHEN FINDING CONTOURS ON HANDWRITTEN IMAGE TOO
@@ -56,7 +56,7 @@ def main():
             
             cv2.imshow("training_numbers.png",imgTrainingNumbers)
             sampleLetter = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))  # flatten image to 1d numpy array so we can write to file later
-            sampleData = np.append(sampleData, sampleLetter,0)  # add current flattened impage numpy array to list of flattened image numpy arrays
+            trainingdata = np.append(trainingdata, sampleLetter,0)  # add current flattened impage numpy array to list of flattened image numpy arrays
     
     cv2.waitKey(0)
     
@@ -74,8 +74,8 @@ def main():
 
     print "\n\ntraining complete !!\n"
 
-    np.savetxt("classifications.txt", flatClassifications)  # write flattened images to file
-    np.savetxt("flattened_images.txt", sampleData)  #
+    np.savetxt("classification_labels.txt", flatClassifications)  # write flattened images to file
+    np.savetxt("training_data.txt", trainingdata)  #
 
     cv2.destroyAllWindows()  # remove windows from memory
 
