@@ -10,6 +10,7 @@ import operator
 import os
 
 import Trainer
+import CharacterHelper
 
 # Constants
 MIN_CONTOUR_AREA = 100
@@ -190,41 +191,58 @@ def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, 
     """
     strFinalString = ""         # declare final string, this will have the final number sequence by the end of the program
 
-    for contourWithData in validContoursWithData:            # for each contour
+    characterList = []
+    for contourWithData in validContoursWithData:
         # Draw a green rect around the current char
-        cv2.rectangle(imgTest,                                        # draw rectangle on original testing image
-                      (contourWithData.intRectX, contourWithData.intRectY),     # upper left corner
-                      (contourWithData.intRectX + contourWithData.intRectWidth, contourWithData.intRectY + contourWithData.intRectHeight),      # lower right corner
-                      (0, 255, 0),              # green
-                      2)                        # thickness
+        character = Character(contourWithData.npaContour)
+        characterList.append(character)
 
-        # crop char out of threshold image
-        imgROI = imgThresh[contourWithData.intRectY : contourWithData.intRectY + contourWithData.intRectHeight,
-                           contourWithData.intRectX : contourWithData.intRectX + contourWithData.intRectWidth]
-        # resize image, this will be more consistent for recognition and storage
+    # Get mean distance between characters
+    nextChar = ""
+    distanceList = [];
+    for i in range(len(characterList) - 1):
+        character = characterList[i]
+        nextChar = characterList[i + 1]
+        distance = CharacterHelper.getDistanceBetween(nextChar, character)
+        distanceList.append(distance)
+
+    meanDistance = np.mean(distanceList)
+    stdDev = np.std(distanceList)
+
+    nextChar = ""
+    for i in range(len(characterList)):
+        character = characterList[i]
+
+        imgROI = imgThresh[character.intBoundingRectY: character.intBoundingRectY + character.intBoundingRectHeight,
+                     character.intBoundingRectX: character.intBoundingRectX + character.intBoundingRectWidth]
         imgROIResized = cv2.resize(imgROI, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
-        # flatten image into 1d numpy array
         npaROIResized = imgROIResized.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
-        # convert from 1d numpy array of ints to 1d numpy array of floats
         npaROIResized = np.float32(npaROIResized)
-        # call KNN function find_nearest
-        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k = 1)
-        # get character from results
+
+        retval, npaResults, neigh_resp, dists = kNearest.find_nearest(npaROIResized, k=1)
+
+        # Get character
         strCurrentChar = str(chr(int(npaResults[0][0])))
-        # append current char to full string
         strFinalString = strFinalString + strCurrentChar
 
+        # Detect space
+        if ( i < len(characterList) - 1):
+            nextChar = characterList[i + 1]
+            distance = CharacterHelper.getDistanceBetween(nextChar, character)
+            if (abs(distance - meanDistance) > stdDev):
+                strFinalString = strFinalString + " "
+
+
     return strFinalString
-
-
 
 def main():
     # Trainer.trainData("training_letters.png")
     kNearest = Trainer.getTrainedKNN()
-    imgTest = __readImage("testimage.png")
+    imgTest = __readImage("real2.jpg")
     imgThresh = __preprocessImage(imgTest)
     validContoursWithData = __getValidContoursWithData(imgThresh)
     strFinalString = __getCharactersFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
+    strFinalString = __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, kNearest)
 
     print "\n" + strFinalString + "\n" # string of characters in image
     cv2.imshow("imgTest", imgTest) # image with green boxes drawn around characters
