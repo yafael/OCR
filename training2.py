@@ -1,4 +1,4 @@
-# Author: Kyla Bouldin
+# Author: Kyla Bouldin, Yashvardhan Gusani
 # Description: creates training data file
 
 import sys
@@ -12,6 +12,17 @@ MIN_CONTOUR_AREA = 0
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
+# ====================
+# Custom function designed to sort the contours
+# ====================
+def sortContours(point1):
+    tolerance_factor = 50
+    mom1 = cv2.moments(point1)
+
+    x = int(mom1['m10']/mom1['m00'])
+    y = int(mom1['m01']/mom1['m00'])  
+
+    return((y // tolerance_factor) * tolerance_factor) * 100 + x
 
 def main():
 		# read in training numbers image
@@ -29,8 +40,9 @@ def main():
     npaContours, npaHierarchy = cv2.findContours(imgThreshCopy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     #################################
-    # TODO: SORT LEFT TO RIGHT THEN TOP TO BOTTOM
+    # Sorting Contours in the correct manner
     #################################
+    npaContours.sort(key=lambda x:sortContours(x))
 
 		# declare empty numpy array, we will use this to write to file later
 		# zero rows, enough cols to hold all image data
