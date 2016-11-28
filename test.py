@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import ContourHelper as help
 
-import train
+import Train
 
 # Constants
 RESIZED_IMAGE_WIDTH = 20
@@ -28,12 +28,12 @@ def __getTrainedKNearest():
 	:return: kNearest object
 	"""
 	try:
-		classificationLabels = np.loadtxt(train.CLASSIFICATION_FILENAME, np.float32)
+		classificationLabels = np.loadtxt(Train.CLASSIFICATION_FILENAME, np.float32)
 	except:
 		print("Can't find classification labels")
 	
 	try:
-		trainingData = np.loadtxt(train.TRAINING_DATA_FILENAME, np.float32)
+		trainingData = np.loadtxt(Train.TRAINING_DATA_FILENAME, np.float32)
 	except:
 		print("Can't find training data")
 
