@@ -13,10 +13,7 @@ K = 2 # for k-NN
 # Character Contour Criteria
 MIN_WIDTH = 2
 MIN_HEIGHT = 5
-
 MIN_CONTOUR_AREA = 100
-MIN_BOX_AREA_DIFF = 1700
-
 MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
@@ -49,8 +46,7 @@ def __getTrainedKNearest():
 	kNearest = cv2.KNearest()
 	kNearest.train(trainingData, classificationLabels)
 
-	return kNearest
-
+	return kNearest	
 
 def __preprocessImage(img):
 	"""
@@ -188,8 +184,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 			cv2.waitKey(0)
 
 	return finalString
-
-
+	
 def printImageCharacters(fileName):
 	"""
 	Runs optical character recognition (OCR) algorithm to detect and print characters in an image.
@@ -206,10 +201,12 @@ def printImageCharacters(fileName):
 
 	# find character contours for characters and sort from upper left to lower right
 	allContours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	characterContourList = __filterForCharacterContours(allContours)
+	allContours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
+	# characterContourList = __filterForCharacterContours(allContours)
 
 	kNearest = __getTrainedKNearest()
-	text = __getStringFromCharacterContours(testImage, imgThresh, characterContourList, kNearest)
+	# remember to change allContours to characterContourList
+	text = __getStringFromCharacterContours(testImage, imgThresh, allContours, kNearest)
 
 	if showImages:
 		cv2.imshow("testImage", testImage)
@@ -227,8 +224,6 @@ def main():
 	printImageCharacters("testdata/couriernew_helloworld_uppercase.png")
 	printImageCharacters("testdata/tnr_helloworld.png")
 	printImageCharacters("handwrittendata/real2.jpg")
-
-
 
 if __name__ == "__main__":
 	main()

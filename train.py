@@ -4,7 +4,7 @@ import cv2
 import ContourHelper as help
 
 # Constants
-MIN_CONTOUR_AREA = 30
+MIN_CONTOUR_AREA = 100
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
@@ -35,10 +35,6 @@ def classifyImage(trainingImageName, classificationArray):
 	# open or create classification and training data files
 	classificationFile = file(CLASSIFICATION_FILENAME, 'a')
 	trainingDataFile = file(TRAINING_DATA_FILENAME, 'a')
-
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
 	
 	# read in training image and apply preprocessing functions
 	trainingImg = cv2.imread(trainingImageName)
