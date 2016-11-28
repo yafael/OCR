@@ -1,4 +1,3 @@
-import os
 import cv2
 import numpy as np
 import ContourHelper as help
@@ -17,9 +16,6 @@ MIN_CONTOUR_AREA = 100
 MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
-# Directory
-TEST_DATA_DIR = ".\\testdata"
-HANDWRITTEN_DATA_DIR = ".\\handwrittendata"
 
 # Flags
 showImages = True
@@ -185,10 +181,11 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 
 	return finalString
 	
-def printImageCharacters(fileName):
+def recognizeCharacters(fileName):
 	"""
 	Runs optical character recognition (OCR) algorithm to detect and print characters in an image.
 	:param fileName: image file path
+	:return text
 	"""
 
 	# TODO: Create comprehensive preprocess class with various preprocessing functions
@@ -214,19 +211,18 @@ def printImageCharacters(fileName):
 
 	cv2.destroyAllWindows()
 			
-	print text
-
+	return text
 
 def main():
-	# TODO: Rename this class something else, like Main or OCR
-	printImageCharacters("testdata/mixed_cap_num.png")
-	printImageCharacters("testdata/foobar.png")
-	printImageCharacters("testdata/multiline.png")
-	printImageCharacters("testdata/multiline_number.png")
-	printImageCharacters("testdata/couriernew_helloworld_uppercase.png")
- 	printImageCharacters("handwrittendata/kyla.jpg")
- 	
-
+	'''
+	print recognizeCharacters("testdata/couriernew_all.png")
+	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
+	print recognizeCharacters("testdata/couriernew_helloworld2_upper.png")
+	print recognizeCharacters("testdata/couriernew_helloworld_mixed.png")
+	print recognizeCharacters("testdata/licenseplate_upper+digits.png")
+	print recognizeCharacters("testdata/tnr_helloworld_lower.png")
+	'''
+	print recognizeCharacters("handwrittendata/kyla.jpg")
 
 if __name__ == "__main__":
 	main()
