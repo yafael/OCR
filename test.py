@@ -40,6 +40,7 @@ def findContours(testFileName):
 	
 	# find and sort contours
 	contours, heierachy = cv2.findContours(imgThreshCopy,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours = help.findValidContours(contours)
 	contours.sort(key=lambda x: help.sortContours(x))
 
 	# initialize variables
@@ -54,7 +55,6 @@ def findContours(testFileName):
 		
 		if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
 			characterContourList.append(contour)
-	
 	# get mean distance between contours
 	nextChar = ""
 	distanceList = []
@@ -66,12 +66,12 @@ def findContours(testFileName):
 	
 	meanDistance = np.mean(distanceList)
 	stdDev = np.std(distanceList)
-	
+
+
 	# get get bounding rects from selected contours and detect spaces
 	for i in range(len(characterContourList)):
 		[intX, intY, intWidth, intHeight] = cv2.boundingRect(characterContourList[i])
 		cv2.rectangle(testImage,(intX, intY),(intX + intWidth, intY + intHeight), (0, 255, 0), 2)
-
 		# crop and resize image
 		letter = imgThresh[intY : intY + intHeight, intX : intX + intWidth]
 		letter = cv2.resize(letter, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))

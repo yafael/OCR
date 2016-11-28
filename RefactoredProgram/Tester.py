@@ -199,7 +199,7 @@ def __getStringsFromContoursWithData(imgTest, imgThresh, validContoursWithData, 
 
     # Get mean distance between characters
     nextChar = ""
-    distanceList = [];
+    distanceList = []
     for i in range(len(characterList) - 1):
         character = characterList[i]
         nextChar = characterList[i + 1]
