@@ -22,7 +22,7 @@ TEST_DATA_DIR = ".\\testdata"
 HANDWRITTEN_DATA_DIR = ".\\handwrittendata"
 
 # Flags
-showImages = False
+showImages = True
 showContourOrder = True
 
 def __getTrainedKNearest():
@@ -219,15 +219,15 @@ def printImageCharacters(fileName):
 
 def main():
 	# TODO: Rename this class something else, like Main or OCR
-	printImageCharacters("testdata/mixed_cap_num.png")
-	printImageCharacters("testdata/foobar.png")
-	printImageCharacters("testdata/multiline.png")
-	printImageCharacters("testdata/multiline_number.png")
+# 	printImageCharacters("testdata/mixed_cap_num.png")
+# 	printImageCharacters("testdata/foobar.png")
+# 	printImageCharacters("testdata/multiline.png")
+# 	printImageCharacters("testdata/multiline_number.png")
 # 	printImageCharacters("testdata/couriernew_helloworld_cap.png")
 # 	printImageCharacters("testdata/couriernew_test.png")
 # 	printImageCharacters("testdata/couriernew_helloworld.png")
 # 	printImageCharacters("testdata/tnr_helloworld.png")
-# 	printImageCharacters("handwrittendata/real2.jpg")
+ 	printImageCharacters("handwrittendata/kyla.jpg")
 
 
 if __name__ == "__main__":
