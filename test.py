@@ -1,8 +1,7 @@
 import cv2
 import numpy as np
 import ContourHelper as help
-
-import Train
+import train
 
 # Constants
 RESIZED_IMAGE_WIDTH = 20
@@ -11,10 +10,7 @@ RESIZED_IMAGE_HEIGHT = 30
 # Character Contour Criteria
 MIN_WIDTH = 2
 MIN_HEIGHT = 5
-
 MIN_CONTOUR_AREA = 100
-MIN_BOX_AREA_DIFF = 1700
-
 MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
@@ -28,12 +24,12 @@ def __getTrainedKNearest():
 	:return: kNearest object
 	"""
 	try:
-		classificationLabels = np.loadtxt(Train.CLASSIFICATION_FILENAME, np.float32)
+		classificationLabels = np.loadtxt(train.CLASSIFICATION_FILENAME, np.float32)
 	except:
 		print("Can't find classification labels")
 	
 	try:
-		trainingData = np.loadtxt(Train.TRAINING_DATA_FILENAME, np.float32)
+		trainingData = np.loadtxt(train.TRAINING_DATA_FILENAME, np.float32)
 	except:
 		print("Can't find training data")
 
@@ -43,8 +39,7 @@ def __getTrainedKNearest():
 	kNearest = cv2.KNearest()
 	kNearest.train(trainingData, classificationLabels)
 
-	return kNearest
-
+	return kNearest	
 
 def __preprocessImage(img):
 	"""
@@ -162,7 +157,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 		letter = np.float32(letter)
 
 		# find k nearest neighbor to determine character
-		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=3)
+		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=1)
 
 		# append character to string
 		currentChar = str(chr(int(ret)))
@@ -181,8 +176,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 			cv2.waitKey(0)
 
 	return finalString
-
-
+	
 def printImageCharacters(fileName):
 	"""
 	Runs optical character recognition (OCR) algorithm to detect and print characters in an image.
@@ -199,10 +193,12 @@ def printImageCharacters(fileName):
 
 	# find character contours for characters and sort from upper left to lower right
 	allContours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	characterContourList = __filterForCharacterContours(allContours)
+	allContours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
+	# characterContourList = __filterForCharacterContours(allContours)
 
 	kNearest = __getTrainedKNearest()
-	text = __getStringFromCharacterContours(testImage, imgThresh, characterContourList, kNearest)
+	# remember to change allContours to characterContourList
+	text = __getStringFromCharacterContours(testImage, imgThresh, allContours, kNearest)
 
 	if showImages:
 		cv2.imshow("testImage", testImage)
@@ -215,10 +211,11 @@ def printImageCharacters(fileName):
 
 def main():
 	# TODO: Rename this class something else, like Main or OCR
-	printImageCharacters("testdata/couriernew_test.png")
-	printImageCharacters("testdata/couriernew_helloworld.png")
-	printImageCharacters("testdata/tnr_helloworld.png")
-	printImageCharacters("handwrittendata/real2.jpg")
+	printImageCharacters("testdata/couriernew_helloworld_cap.png")
+# 	printImageCharacters("testdata/couriernew_test.png")
+# 	printImageCharacters("testdata/couriernew_helloworld.png")
+# 	printImageCharacters("testdata/tnr_helloworld.png")
+# 	printImageCharacters("handwrittendata/real2.jpg")
 
 
 if __name__ == "__main__":

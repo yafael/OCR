@@ -4,7 +4,7 @@ import cv2
 import ContourHelper as help
 
 # Constants
-MIN_CONTOUR_AREA = 30
+MIN_CONTOUR_AREA = 100
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
@@ -34,10 +34,6 @@ def classifyImage(trainingImageName, classificationArray):
 	# open or create classification and training data files
 	classificationFile = file(CLASSIFICATION_FILENAME, 'a')
 	trainingDataFile = file(TRAINING_DATA_FILENAME, 'a')
-
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
 	
 	# read in training image and apply preprocessing functions
 	trainingImg = cv2.imread(trainingImageName)
@@ -123,18 +119,27 @@ def main():
 	:return: void
 	"""
 
-	os.remove(CLASSIFICATION_FILENAME)
-	os.remove(TRAINING_DATA_FILENAME)
+	try:
+		os.remove(CLASSIFICATION_FILENAME)
+	except:
+		print("no classification labels")
+	
+	try:
+		os.remove(TRAINING_DATA_FILENAME)
+	except:
+		print("no training data")
 
-	# TODO: Call classifyImage based on filename endings in the train data folder
-	classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# TODO Call classifyImage based on filename endings in the train data folder
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
 	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
 	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+	"""
+	classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
 
 	classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
 	classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
 
-	"""
 	classifyImage("traindata/arial_lowercase.png", lowercase_labels)
 	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
 	classifyImage("traindata/arial_numbers.png", numbers_labels)
