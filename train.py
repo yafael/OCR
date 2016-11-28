@@ -1,27 +1,27 @@
-# Author: Kyla Bouldin, Yashvardhan Gusani
-# Description: creates training data and classification files
-
 import sys
 import numpy as np
 import cv2
-import sortContours as sort
+import helperfunctions as help
 
-# constants
-MIN_CONTOUR_AREA = 25
+MIN_CONTOUR_AREA = 30
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
-
-
-
+			
 # ====================
-# main function; starts training process
+# produce training fata and classification files given filename and classification array
 # ====================
-def classifyImage(trainingFileName, classificationArray):
+def classifyImage(trainingImageName, classificationArray):
+	# open or create classification and training data files
 	classificationFile = file('classification_labels.txt', 'a')
 	trainingDataFile = file('training_data.txt', 'a')
 	
-	# read in training numbers image, grayscale it, filter to black and white, display image, make a copy
-	trainingImg = cv2.imread(trainingFileName)
+	
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
+	
+	# read in training image and apply preprocessing functions
+	trainingImg = cv2.imread(trainingImageName)
 	grayImg = cv2.cvtColor(trainingImg, cv2.COLOR_BGR2GRAY)
 	threshImg = cv2.adaptiveThreshold(grayImg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 	cv2.imshow("threshImg", threshImg)
@@ -29,43 +29,64 @@ def classifyImage(trainingFileName, classificationArray):
 
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(threshImgCopy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours.sort(key=lambda x: sort.sortContours(x))
+	contours.sort(key=lambda x: help.sortContours(x))
 	
-
-	# declare empty numpy array for each training data sample
+	# declare empty array with size equal to number of training data samples
 	trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+	
+	# find contours that have a tittle on top (i's or j's)
+	letterWithTittle = []
+	tittles = []
+	for i in range(len(contours)-1):
+		if help.detectTittles(contours[i], contours[i+1]):
+			letterWithTittle.append(contours[i])
+			tittles.append(contours[i+1])
 
-	# show found contours using bounding rect
+	# add appropriate contours to training data
 	for contour in contours:
 			if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
-					[intX, intY, intW, intH] = cv2.boundingRect(contour)
-					cv2.rectangle(trainingImg,(intX, intY),(intX + intW, intY + intH),(255, 0, 255),1)
-
-					contourImg = threshImg[intY:intY + intH, intX:intX + intW]
-					contourImgResized = cv2.resize(contourImg, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+				# get bounding rect for current contour
+				[intX, intY, intW, intH] = cv2.boundingRect(contour)
+				
+				# check if contour has tittle
+				index = help.getIndexOfTittle(contour, letterWithTittle)
+				if index > -1:
+					# get demensions of tittle and use to draw rect and grab letter
+					[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])
+					additionalHeight = intY - (tY + tHeight)
 					
-					cv2.imshow("training_numbers",trainingImg)
-					sampleLetter = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))  # flatten image to 1d numpy array so we can write to file later
-					trainingdata = np.append(trainingdata, sampleLetter,0)  # add current flattened impage numpy array to list of flattened image numpy arrays
-	
-	cv2.waitKey(0)
-	
+					cv2.rectangle(trainingImg,(intX, tY),(intX + intW, tY + intH + tHeight + additionalHeight),(255, 0, 0),1)
+					contourImg = threshImg[intY:intY + intH + tHeight + additionalHeight, intX:intX + intW]
+				else:
+					# if no tittle, draw rect and grab letter
+					cv2.rectangle(trainingImg,(intX, intY),(intX + intW, intY + intH),(255, 0, 255),1)
+					contourImg = threshImg[intY:intY + intH, intX:intX + intW]
+
+				# resize image and show on original
+				contourImgResized = cv2.resize(contourImg, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+				cv2.imshow("training_numbers",trainingImg)
+				
+				# flatten contour to 1D and append to training data
+				contourImgFlatten = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
+				trainingdata = np.append(trainingdata, contourImgFlatten,0)
+		
 	# convert classifications list of ints to numpy array of floats
 	floatClassifications = np.array(classificationArray, np.float32)
 
 	# flatten to 1d
 	flatClassifications = floatClassifications.reshape((floatClassifications.size, 1))
 
-	print "\n\ntraining complete !!\n"
-
-
+	# save classification and training data
 	np.savetxt(classificationFile, flatClassifications)
 	classificationFile.close()
 	
 	np.savetxt(trainingDataFile, trainingdata)
 	trainingDataFile.close()
 
-	cv2.destroyAllWindows()  # remove windows from memory
+	# remove windows from memory
+	cv2.waitKey(0)
+	cv2.destroyAllWindows() 
+	print "\n\ntraining complete !!\n"
 
 	return
 

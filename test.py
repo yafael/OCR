@@ -1,32 +1,13 @@
-# Author: Kyla Bouldin, Yashvardhan Gusani
-# Description: Tests the trained data on test images
-
 import cv2
 import numpy as np
-import operator
-import os
-import sortContours as sort
-import math
+import helperfunctions as help
 
-# Constants
 MIN_CONTOUR_AREA = 100
-
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-def getDistanceBetween(charA, charB):
-	MomCharA = cv2.moments(charA)
-	MomCharB = cv2.moments(charB)
-	cXA = int(MomCharA["m10"] / MomCharA["m00"])
-	cYA = int(MomCharA["m01"] / MomCharA["m00"])
-	cXB = int(MomCharB["m10"] / MomCharB["m00"])
-	cYB = int(MomCharB["m01"] / MomCharB["m00"])
-	intX = abs(cXA - cXB)
-	intY = abs(cYA - cYB)
-	return math.sqrt((intX ** 2) + (intY ** 2))
-
 # ====================
-# takes in image and finds all contours and prints out words it finds
+# finds contours on given image file and prints detected string
 # ====================
 def findContours(testFileName):
 	# load classifications and test data
@@ -39,11 +20,6 @@ def findContours(testFileName):
 		trainingData = np.loadtxt("training_data.txt", np.float32)
 	except:
 		print("Can't find training data")
-
-	print("num labels: ")		
-	print(len(classificationLabels))
-	print("num training: ")		
-	print(len(trainingData))
 	
 	# reshape classifications to 1d
 	classificationLabels = classificationLabels.reshape((classificationLabels.size, 1))
@@ -52,72 +28,86 @@ def findContours(testFileName):
 	kNearest = cv2.KNearest()
 	kNearest.train(trainingData, classificationLabels)
 		
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
+		
+	# read in testing image and apply preprocessing functions
 	testImage = cv2.imread(testFileName)
 	testImGray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
 	imgThresh = cv2.adaptiveThreshold(testImGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
 	imgThreshCopy = imgThresh.copy() 
 	
+	# find and sort contours
 	contours, heierachy = cv2.findContours(imgThreshCopy,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours.sort(key=lambda x: sort.sortContours(x))
+	contours.sort(key=lambda x: help.sortContours(x))
 
-	
+	# initialize variables
 	finalString = ""
 	characterContourList = []
 	
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# TODO GET MEAN CONTOUR AREA AND ADD THRESHOLD BETWEEN MEAN AND CURRENT TO FILTER CONTOURS
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
 	for contour in contours:
 		area = cv2.contourArea(contour) 
 		
 		if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
 			characterContourList.append(contour)
 	
-	# get mean distance between chars
+	# get mean distance between contours
 	nextChar = ""
 	distanceList = []
 	for i in range(len(characterContourList) - 1):
 		character = characterContourList[i]
 		nextChar = characterContourList[i + 1]
-		distance = getDistanceBetween(nextChar, character)
+		distance = help.getDistanceBetween(nextChar, character)
 		distanceList.append(distance)
 	
 	meanDistance = np.mean(distanceList)
 	stdDev = np.std(distanceList)
 	
-	nextChar = ""
+	# get get bounding rects from selected contours and detect spaces
 	for i in range(len(characterContourList)):
-		character = characterContourList[i]
-		[intX, intY, intWidth, intHeight] = cv2.boundingRect(character)
+		[intX, intY, intWidth, intHeight] = cv2.boundingRect(characterContourList[i])
 		cv2.rectangle(testImage,(intX, intY),(intX + intWidth, intY + intHeight), (0, 255, 0), 2)
-		# crop image
+
+		# crop and resize image
 		letter = imgThresh[intY : intY + intHeight, intX : intX + intWidth]
-											 
 		letter = cv2.resize(letter, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
 		
-		# make 1d
+		# flatten and convert to numpy array of floats
 		letter = letter.reshape((1, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 		letter = np.float32(letter)
 		
+		# find k nearest neighbor
 		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=3)
 		
+		# append to string
 		currentChar = str(chr(int(ret)))
 		finalString = finalString + currentChar
 		
-		# detect space
+		cv2.imshow("testImage", testImage)
+		cv2.waitKey(0)
+
+		#detect space
+		nextChar = ""
 		if (i < len(characterContourList) - 1):
 			nextChar = characterContourList[i + 1]
-			distance = getDistanceBetween(nextChar, character)
+			distance = help.getDistanceBetween(nextChar, character)
 			if (abs(distance - meanDistance) > stdDev):
 				finalString = finalString + " "
 			
 	print "\n" + finalString + "\n"
-	cv2.imshow("testImage", testImage)
-	cv2.waitKey(0)
 
 	cv2.destroyAllWindows()
 			
 	return finalString
 
-
+# ====================
+# run findContours on multiple images
+# ====================
 findContours("testdata/couriernew_test.png")
 findContours("testdata/couriernew_helloworld.png")
 findContours("testdata/tnr_helloworld.png")
-findContours("handwrittendata/real4.jpg")
+findContours("handwrittendata/real2.jpg")
