@@ -13,13 +13,9 @@ TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-<<<<<<< HEAD
-showImages = True # whether to cv2.imshow() the results
-showContourOrder = False # whether to show order of contours being classified
-=======
 showImages = False # whether to cv2.imshow() the results
 showContourOrder = True # whether to show order of contours being classified
->>>>>>> 724acc4b54c12da5554007395d6974b3304a0280
+checkForTittles = False
 
 # Classification Labels
 lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
@@ -55,31 +51,32 @@ def classifyImage(trainingImageName, classificationArray):
 	trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 	
 	# find contours that have a tittle on top (i's or j's)
-	lettersWithTittles = []
-	tittles = []
-	for i in range(len(contours)-1):
-		if help.detectTittles(contours[i], contours[i+1]):
-			lettersWithTittles.append(contours[i])
-			tittles.append(contours[i+1])
+	if checkForTittles:
+		lettersWithTittles = []
+		tittles = []
+		for i in range(len(contours)-1):
+			if help.detectTittles(contours[i], contours[i+1]):
+				lettersWithTittles.append(contours[i])
+				tittles.append(contours[i+1])
 
 	# add appropriate contours to training data
 	for contour in contours:
 			if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
 				# get bounding rect for current contour
 				[intX, intY, intW, intH] = cv2.boundingRect(contour)
-				
-				# check if contour has tittle
-				index = help.getIndexOfTittle(contour, lettersWithTittles)
-				if index > -1:
-					# get dimensions of tittle and use to draw rect and grab letter
-					[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])
-					additionalHeight = intY - (tY + tHeight)
-					
-					cv2.rectangle(trainingImg,(intX, tY),(intX + intW, tY + intH + tHeight + additionalHeight),(255, 0, 0),1)
-					contourImg = threshImg[intY:intY + intH + tHeight + additionalHeight, intX:intX + intW]
+
+				if checkForTittles and help.getIndexOfTittle(contour, lettersWithTittles) > -1:
+					index = help.getIndexOfTittle(contour, lettersWithTittles)
+					if index > -1:
+						# get dimensions of tittle and use to draw rect and grab letter
+						[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])
+						additionalHeight = intY - (tY + tHeight)
+
+						cv2.rectangle(trainingImg,(intX, tY),(intX + intW, tY + intH + tHeight + additionalHeight),(255, 0, 0),1)
+						contourImg = threshImg[intY:intY + intH + tHeight + additionalHeight, intX:intX + intW]
 				else:
-					# if no tittle, draw rect and grab letter
-					cv2.rectangle(trainingImg,(intX, intY),(intX + intW, intY + intH),(255, 0, 255),1)
+					# draw rect and grab letter
+					cv2.rectangle(trainingImg, (intX, intY), (intX + intW, intY + intH), (255, 0, 255), 1)
 					contourImg = threshImg[intY:intY + intH, intX:intX + intW]
 
 				# resize image and show on original
