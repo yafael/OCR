@@ -198,8 +198,8 @@ def recognizeCharacters(fileName):
 	# find character contours for characters and sort from upper left to lower right
 	allContours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	allContours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
-	# characterContourList = __filterForCharacterContours(allContours)
-
+	characterContourList = __filterForCharacterContours(allContours)
+	
 	kNearest = __getTrainedKNearest()
 	# remember to change allContours to characterContourList
 	text = __getStringFromCharacterContours(testImage, imgThresh, allContours, kNearest)
@@ -220,8 +220,17 @@ def main():
 	print recognizeCharacters("testdata/multiline_number.png")
 	print recognizeCharacters("testdata/multiline.png")
 	print recognizeCharacters("testdata/timesnewroman_digits.png")
-	print recognizeCharacters("handwrittendata/kyla.jpg")
-	print recognizeCharacters("handwrittendata/kyla2.jpg")
+	
+	print recognizeCharacters("testdata/handwritten/kyla_letters.jpg")
+	print recognizeCharacters("testdata/handwritten/kyla_mix.jpg")
+	print recognizeCharacters("testdata/handwritten/kyla_numbers.jpg")
+	print recognizeCharacters("testdata/handwritten/licenseplate.jpg")
+
+	print recognizeCharacters("testdata/handwritten/real1.jpg")
+	print recognizeCharacters("testdata/handwritten/real2.jpg")
+	print recognizeCharacters("testdata/handwritten/real3.jpg")
+	print recognizeCharacters("testdata/handwritten/real4.jpg")
+	
 
 if __name__ == "__main__":
 	main()
