@@ -10,11 +10,12 @@ RESIZED_IMAGE_HEIGHT = 30
 
 CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
-TRAIN_DATA_DIR = ".\\traindata"
+TRAIN_DATA_DIR = "traindata/"
+# TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = False # whether to cv2.imshow() the results
-showContourOrder = True # whether to show order of contours being classified
+showImages = True # whether to cv2.imshow() the results
+showContourOrder = False # whether to show order of contours being classified
 checkForTittles = False
 
 # Classification Labels
@@ -127,39 +128,20 @@ def main():
 	open(CLASSIFICATION_FILENAME, 'w').close()
 	open(TRAINING_DATA_FILENAME, 'w').close()
 	
-	for file in os.listdir(TRAIN_DATA_DIR):
+	for file in os.listdir(os.path.expanduser(TRAIN_DATA_DIR)):
 		label = []
 		#if file.endswith("_lowercase.png"):
 			#	label.append(lowercase_labels)
 		if file.endswith("_uppercase.png"):
-			label.append(uppercase_labels)
+			label = uppercase_labels
 		elif file.endswith("_numbers.png"):
-			label.append(numbers_labels)
+			label = numbers_labels
 		else:
 			continue
 			
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
-	"""
-	classifyImage("traindata/handwriting/kyla_uppercase.jpg", uppercase_labels)
-	classifyImage("traindata/handwriting/kyla_numbers.jpg", numbers_labels)
-	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
-	classifyImage("traindata/arial_numbers.png", numbers_labels)
-	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)
-	classifyImage("traindata/calibri_numbers.png", numbers_labels)
-	classifyImage("traindata/chalkboard_uppercase.png", uppercase_labels)
-	classifyImage("traindata/chalkboard_numbers.png", numbers_labels)
-	classifyImage("traindata/comicsans_uppercase.png", uppercase_labels)
-	classifyImage("traindata/comicsans_numbers.png", numbers_labels)
-	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
-	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
-	classifyImage("traindata/helvetica_uppercase.png", uppercase_labels)
-	classifyImage("traindata/helvetica_numbers.png", numbers_labels)
-	classifyImage("traindata/TNR_uppercase.png", uppercase_labels)
-	classifyImage("traindata/TNR_numbers.png", numbers_labels)
-	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
-	classifyImage("traindata/verdana_numbers.png", numbers_labels)
-	"""
+
 	return
 
 if __name__ == "__main__":
