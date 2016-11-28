@@ -1,21 +1,39 @@
-import sys
+import os
 import numpy as np
 import cv2
 import helperfunctions as help
 
+# Constants
 MIN_CONTOUR_AREA = 30
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
-			
-# ====================
-# produce training fata and classification files given filename and classification array
-# ====================
+
+CLASSIFICATION_FILENAME = 'classification_labels.txt'
+TRAINING_DATA_FILENAME = 'training_data.txt'
+
+showImages = False # whether to cv2.imshow() the results
+showContourOrder = False # whether to show order of contours being classified
+
+# Classification Labels
+lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
+	ord('k'), ord('l'), ord('m'), ord('n'), ord('o'), ord('p'), ord('q'), ord('r'), ord('s'), ord('t'),
+	ord('u'), ord('v'), ord('w'), ord('x'), ord('y'), ord('z')]
+uppercase_labels = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'),
+	ord('K'), ord('L'), ord('M'), ord('N'), ord('O'), ord('P'), ord('Q'), ord('R'), ord('S'), ord('T'),
+	ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
+numbers_labels = [ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), ord('8'), ord('9')]
+
 def classifyImage(trainingImageName, classificationArray):
+	"""
+	Produce training data and classification files given filename and classification array
+	:param trainingImageName:
+	:param classificationArray:
+	:return:
+	"""
 	# open or create classification and training data files
-	classificationFile = file('classification_labels.txt', 'a')
-	trainingDataFile = file('training_data.txt', 'a')
-	
-	
+	classificationFile = file(CLASSIFICATION_FILENAME, 'a')
+	trainingDataFile = file(TRAINING_DATA_FILENAME, 'a')
+
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
@@ -25,7 +43,8 @@ def classifyImage(trainingImageName, classificationArray):
 	grayImg = cv2.cvtColor(trainingImg, cv2.COLOR_BGR2GRAY)
 	blurImg = cv2.blur(grayImg,(5,5))
 	threshImg = cv2.adaptiveThreshold(blurImg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-	cv2.imshow("threshImg", threshImg)
+	if showImages:
+		cv2.imshow("threshImg", threshImg)
 
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(threshImg.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -51,7 +70,7 @@ def classifyImage(trainingImageName, classificationArray):
 				# check if contour has tittle
 				index = help.getIndexOfTittle(contour, letterWithTittle)
 				if index > -1:
-					# get demensions of tittle and use to draw rect and grab letter
+					# get dimensions of tittle and use to draw rect and grab letter
 					[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])
 					additionalHeight = intY - (tY + tHeight)
 					
@@ -64,15 +83,17 @@ def classifyImage(trainingImageName, classificationArray):
 
 				# resize image and show on original
 				contourImgResized = cv2.resize(contourImg, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
-				cv2.imshow("training_numbers",trainingImg)
+				if showImages:
+					cv2.imshow("training_numbers", trainingImg)
 				
 				# flatten contour to 1D and append to training data
 				contourImgFlatten = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 				trainingdata = np.append(trainingdata, contourImgFlatten,0)
 
-				# ~~~~~~~~ THIS IS USED TO SHOW ORDER OF CONTOURS ~~~~~~~~~~ #
-# 				cv2.imshow("testImage", trainingImg)
-# 				cv2.waitKey(0)
+				# show order that contours are classified
+				if showContourOrder:
+					cv2.imshow("testImage", trainingImg)
+					cv2.waitKey(0)
 		
 	# convert classifications list of ints to numpy array of floats
 	floatClassifications = np.array(classificationArray, np.float32)
@@ -90,32 +111,41 @@ def classifyImage(trainingImageName, classificationArray):
 	# remove windows from memory
 	cv2.waitKey(0)
 	cv2.destroyAllWindows() 
-	print "\n\ntraining complete !!\n"
+	print "Training complete: %s" % trainingImageName
 
 	return
 
 
-# ====================
-# Run main methods
-# ====================
-lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
-	ord('k'), ord('l'), ord('m'), ord('n'), ord('o'), ord('p'), ord('q'), ord('r'), ord('s'), ord('t'),
-	ord('u'), ord('v'), ord('w'), ord('x'), ord('y'), ord('z')]
-uppercase_labels = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'),
-	ord('K'), ord('L'), ord('M'), ord('N'), ord('O'), ord('P'), ord('Q'), ord('R'), ord('S'), ord('T'),
-	ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
-numbers_labels = [ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), ord('8'), ord('9')]
+def main():
+	"""
+	Classifies training data images with uppercase, lowercase, and number labels
+	:return: void
+	"""
 
-classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
-classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
-classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+	os.remove(CLASSIFICATION_FILENAME)
+	os.remove(TRAINING_DATA_FILENAME)
 
-classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
-classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
+	# TODO: Call classifyImage based on filename endings in the train data folder
+	classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
+	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
+	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
 
+	classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
+	classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
 
+	"""
+	classifyImage("traindata/arial_lowercase.png", lowercase_labels)
+	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
+	classifyImage("traindata/arial_numbers.png", numbers_labels)
+	"""
 
-# classifyImage("traindata/arial_lowercase.png", lowercase_labels)
-# classifyImage("traindata/arial_uppercase.png", uppercase_labels)
-# classifyImage("traindata/arial_numbers.png", numbers_labels)
+	""" Returning errors
+	classifyImage("traindata/edrienne_lowercase.jpg", lowercase_labels)
+	classifyImage("traindata/edrienne_uppercase.jpg", uppercase_labels)
+	classifyImage("traindata/edrienne_numbers.jpg", numbers_labels)
+	"""
 
+	return
+
+if __name__ == "__main__":
+	main()

@@ -1,17 +1,19 @@
 import cv2
 import numpy as np
 import helperfunctions as help
-import math
 
+# Constants
 MIN_CONTOUR_AREA = 100
 MIN_BOX_AREA_DIFF = 1700
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-# ====================
-# finds contours on given image file and prints detected string
-# ====================
 def findContours(testFileName):
+	"""
+	Finds contours on given image file and prints detected string
+	:param testFileName:
+	:return:
+	"""
 	# load classifications and test data
 	try:
 		classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
@@ -43,7 +45,7 @@ def findContours(testFileName):
 	cv2.waitKey(0)
 	
 	# find and sort contours
-	contours, heierachy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	contours = help.findValidContours(contours)
 	contours.sort(key=lambda x: help.sortContours(x))
 
@@ -127,10 +129,15 @@ def findContours(testFileName):
 			
 	return finalString
 
-# ====================
-# run findContours on multiple images
-# ====================
-findContours("testdata/couriernew_test.png")
-findContours("testdata/couriernew_helloworld.png")
-findContours("testdata/tnr_helloworld.png")
-findContours("handwrittendata/real2.jpg")
+def main():
+	"""
+	Runs findContours on multiple test images.
+	:return: void
+	"""
+	findContours("testdata/couriernew_test.png")
+	findContours("testdata/couriernew_helloworld.png")
+	findContours("testdata/tnr_helloworld.png")
+	findContours("handwrittendata/real2.jpg")
+
+if __name__ == "__main__":
+	main()
