@@ -7,14 +7,14 @@ import math
 import numpy as np
 
 
-def sortContours(point1):
+def sortContours(contour):
     """
-	Sorts contours from left to right, top to bottom
-	:param point1:
-	:return:
+	Method used to sort contours from left to right, top to bottom
+	:param contour:
+	:return: Score used to sort contours
 	"""
     tolerance_factor = 50
-    mom1 = cv2.moments(point1)
+    mom1 = cv2.moments(contour)
 
     x, y = 0, 0
     if mom1["m00"] != 0:
@@ -24,10 +24,15 @@ def sortContours(point1):
     return ((y // tolerance_factor) * tolerance_factor) * 100 + x
 
 
-def detectTittles(point1, point2):
+def detectTittles(contour1, contour2):
+    """
+    :param contour1:
+    :param contour2:
+    :return: Whether two contours are a character with a tittle
+    """
     tolerance_factor = 5
-    mom1 = cv2.moments(point1)
-    mom2 = cv2.moments(point2)
+    mom1 = cv2.moments(contour1)
+    mom2 = cv2.moments(contour2)
 
     x1, x2 = 0, 0
     if mom1["m00"] != 0:
@@ -42,26 +47,46 @@ def detectTittles(point1, point2):
     else:
         return False
 
-
 def getDistanceBetween(charA, charB):
+    """
+    :param charA: Contour for character A
+    :param charB: Contour for character B
+    :return: Distance between the center of charA and charB using the Pythagorean theorem
+    """
     MomCharA = cv2.moments(charA)
     MomCharB = cv2.moments(charB)
-    cXA = int(MomCharA["m10"] / MomCharA["m00"])
-    cYA = int(MomCharA["m01"] / MomCharA["m00"])
-    cXB = int(MomCharB["m10"] / MomCharB["m00"])
-    cYB = int(MomCharB["m01"] / MomCharB["m00"])
+
+    cxA, cYA, cXB, cYB = 0, 0, 0, 0
+
+    if (MomCharA["m00"] != 0):
+        cXA = int(MomCharA["m10"] / MomCharA["m00"])
+        cYA = int(MomCharA["m01"] / MomCharA["m00"])
+
+    if (MomCharB["m00"] != 0):
+        cXB = int(MomCharB["m10"] / MomCharB["m00"])
+        cYB = int(MomCharB["m01"] / MomCharB["m00"])
+
     intX = abs(cXA - cXB)
     intY = abs(cYA - cYB)
+
     return math.sqrt((intX ** 2) + (intY ** 2))
 
-
 def getIndexOfTittle(contour, letterWithTittle):
+    """
+    :param contour:
+    :param letterWithTittle:
+    :return: i The index of the first contour that has a letter with a tittle
+    """
     for i in range(len(letterWithTittle)):
         if (np.any(contour == letterWithTittle[i])):
             return i
     return -1
 
 def findValidContours(contours):
+    """
+    :param contours: List of contours
+    :return: validList Contours that match our criteria for potential characters
+    """
 	areaList = []
 	validList = []
 
@@ -81,6 +106,11 @@ def findValidContours(contours):
 	return validList
 
 def findValidRectangles(rects):
+    """
+    TODO: Delete. This isn't used anywhere.
+    :param rects:
+    :return: validList of rectangles
+    """
 	validList = []
 
 	meanArea = np.mean(rects)
