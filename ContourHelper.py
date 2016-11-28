@@ -56,7 +56,7 @@ def getDistanceBetween(contour1, contour2):
     momContour1 = cv2.moments(contour1)
     momContour2 = cv2.moments(contour2)
 
-    cxA, cYA, cXB, cYB = 0, 0, 0, 0
+    cXA, cYA, cXB, cYB = 0, 0, 0, 0
 
     if (momContour1["m00"] != 0):
         cXA = int(momContour1["m10"] / momContour1["m00"])

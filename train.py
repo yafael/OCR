@@ -13,8 +13,8 @@ TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = False # whether to cv2.imshow() the results
-showContourOrder = False # whether to show order of contours being classified
+showImages = True # whether to cv2.imshow() the results
+showContourOrder = True # whether to show order of contours being classified
 
 # Classification Labels
 lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
@@ -118,21 +118,63 @@ def main():
 	Classifies training data images with uppercase, lowercase, and number labels
 	:return: void
 	"""
+
+	try:
+		os.remove(CLASSIFICATION_FILENAME)
+	except:
+		print("no classification labels")
+	
+	try:
+		os.remove(TRAINING_DATA_FILENAME)
+	except:
+		print("no training data")
+
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
+	# TODO Call classifyImage based on filename endings in the train data folder
+	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
+	'''
 	open(CLASSIFICATION_FILENAME, 'w').close()
 	open(TRAINING_DATA_FILENAME, 'w').close()
-
+	
 	for file in os.listdir(TRAIN_DATA_DIR):
 		label = []
 		#if file.endswith("_lowercase.png"):
-		#	label.append(lowercase_labels)
+			#	label.append(lowercase_labels)
 		if file.endswith("_uppercase.png"):
 			label.append(uppercase_labels)
 		elif file.endswith("_numbers.png"):
 			label.append(numbers_labels)
 		else:
 			continue
+			
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
+	'''
+		
+	try:
+		os.remove(CLASSIFICATION_FILENAME)
+	except:
+		print("no classification labels")
+	
+	try:
+		os.remove(TRAINING_DATA_FILENAME)
+	except:
+		print("no training data")
+		
+	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
+	classifyImage("traindata/arial_numbers.png", numbers_labels)
+	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)
+	classifyImage("traindata/calibri_numbers.png", numbers_labels)
+	classifyImage("traindata/chalkboard_uppercase.png", uppercase_labels)
+	classifyImage("traindata/chalkboard_numbers.png", numbers_labels)
+	classifyImage("traindata/comicsans_uppercase.png", uppercase_labels)
+	classifyImage("traindata/comicsans_numbers.png", numbers_labels)
+	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
+	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+	classifyImage("traindata/TNR_uppercase.png", uppercase_labels)
+	classifyImage("traindata/TNR_numbers.png", numbers_labels)
+	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
+	classifyImage("traindata/verdana_numbers.png", numbers_labels)
 
 	return
 

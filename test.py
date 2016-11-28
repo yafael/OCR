@@ -18,7 +18,7 @@ MAX_ASPECT_RATIO = 3.9
 
 
 # Flags
-showImages = False
+showImages = True
 showContourOrder = True
 
 def __getTrainedKNearest():
@@ -221,6 +221,7 @@ def main():
 	print recognizeCharacters("testdata/couriernew_helloworld_mixed.png")
 	print recognizeCharacters("testdata/licenseplate_upper+digits.png")
 	print recognizeCharacters("testdata/tnr_helloworld_lower.png")
+	print recognizeCharacters("handwrittendata/kyla.jpg")
 
 if __name__ == "__main__":
 	main()
