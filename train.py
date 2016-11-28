@@ -54,11 +54,11 @@ def classifyImage(trainingImageName, classificationArray):
 	trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 	
 	# find contours that have a tittle on top (i's or j's)
-	letterWithTittle = []
+	lettersWithTittles = []
 	tittles = []
 	for i in range(len(contours)-1):
 		if help.detectTittles(contours[i], contours[i+1]):
-			letterWithTittle.append(contours[i])
+			lettersWithTittles.append(contours[i])
 			tittles.append(contours[i+1])
 
 	# add appropriate contours to training data
@@ -68,7 +68,7 @@ def classifyImage(trainingImageName, classificationArray):
 				[intX, intY, intW, intH] = cv2.boundingRect(contour)
 				
 				# check if contour has tittle
-				index = help.getIndexOfTittle(contour, letterWithTittle)
+				index = help.getIndexOfTittle(contour, lettersWithTittles)
 				if index > -1:
 					# get dimensions of tittle and use to draw rect and grab letter
 					[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])

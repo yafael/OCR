@@ -71,14 +71,14 @@ def getDistanceBetween(charA, charB):
 
     return math.sqrt((intX ** 2) + (intY ** 2))
 
-def getIndexOfTittle(contour, letterWithTittle):
+def getIndexOfTittle(contour, lettersWithTittles):
     """
     :param contour:
-    :param letterWithTittle:
+    :param lettersWithTittles: 
     :return: i The index of the first contour that has a letter with a tittle
     """
-    for i in range(len(letterWithTittle)):
-        if (np.any(contour == letterWithTittle[i])):
+    for i in range(len(lettersWithTittles)):
+        if (np.any(contour == lettersWithTittles[i])):
             return i
     return -1
 
