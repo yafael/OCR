@@ -212,7 +212,8 @@ def printImageCharacters(fileName):
 
 def main():
 	# TODO: Rename this class something else, like Main or OCR
-	printImageCharacters("testdata/couriernew_helloworld_cap.png")
+	printImageCharacters("testdata/mixed_cap_num.png")
+# 	printImageCharacters("testdata/couriernew_helloworld_cap.png")
 # 	printImageCharacters("testdata/couriernew_test.png")
 # 	printImageCharacters("testdata/couriernew_helloworld.png")
 # 	printImageCharacters("testdata/tnr_helloworld.png")
