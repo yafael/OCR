@@ -1,2 +1,5 @@
-# exclude everything
+# Folders
 .idea/*
+
+# File Types
+*.pyc
