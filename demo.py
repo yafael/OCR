@@ -1,11 +1,12 @@
 import sys, os
 
-import train
-import test
+import Train
+import Test
 
 def main():
-    train.main()
-    test.main()
+    Train.main()
+    print "\n"
+    Test.main()
 
 if __name__ == "__main__":
 	main()

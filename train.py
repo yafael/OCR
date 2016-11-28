@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import cv2
-import helperfunctions as help
+import ContourHelper as help
 
 # Constants
 MIN_CONTOUR_AREA = 30
@@ -11,7 +11,8 @@ RESIZED_IMAGE_HEIGHT = 30
 CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
 
-showImages = False # whether to cv2.imshow() the results
+# Flags
+showImages = True # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
 
 # Classification Labels
@@ -48,17 +49,17 @@ def classifyImage(trainingImageName, classificationArray):
 
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(threshImg.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours.sort(key=lambda x: help.sortContours(x))
+	contours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
 	
 	# declare empty array with size equal to number of training data samples
 	trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 	
 	# find contours that have a tittle on top (i's or j's)
-	letterWithTittle = []
+	lettersWithTittles = []
 	tittles = []
 	for i in range(len(contours)-1):
 		if help.detectTittles(contours[i], contours[i+1]):
-			letterWithTittle.append(contours[i])
+			lettersWithTittles.append(contours[i])
 			tittles.append(contours[i+1])
 
 	# add appropriate contours to training data
@@ -68,7 +69,7 @@ def classifyImage(trainingImageName, classificationArray):
 				[intX, intY, intW, intH] = cv2.boundingRect(contour)
 				
 				# check if contour has tittle
-				index = help.getIndexOfTittle(contour, letterWithTittle)
+				index = help.getIndexOfTittle(contour, lettersWithTittles)
 				if index > -1:
 					# get dimensions of tittle and use to draw rect and grab letter
 					[tX, tY,tWidth, tHeight] = cv2.boundingRect(tittles[index])
@@ -91,7 +92,7 @@ def classifyImage(trainingImageName, classificationArray):
 				trainingdata = np.append(trainingdata, contourImgFlatten,0)
 
 				# show order that contours are classified
-				if showContourOrder:
+				if showImages and showContourOrder:
 					cv2.imshow("testImage", trainingImg)
 					cv2.waitKey(0)
 		
