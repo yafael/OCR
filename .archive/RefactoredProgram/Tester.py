@@ -4,13 +4,13 @@
 # TODO: Method docs and refactoring
 
 import math
-import cv2
-import numpy as np
-import operator
 import os
 
-import Trainer
+import cv2
+import numpy as np
+
 import CharacterHelper
+import Trainer
 
 # Constants
 MIN_CONTOUR_AREA = 100
@@ -124,7 +124,7 @@ def __getValidContoursWithData(imgThresh):
                                                  # input image, make sure to use a copy since the function will modify this image in the course of finding contours
                                                  cv2.RETR_EXTERNAL,  # retrieve the outermost contours only
                                                  cv2.CHAIN_APPROX_SIMPLE)  # compress horizontal, vertical, and diagonal segments and leave only their end points
-    npaContours.sort(key=lambda x:Trainer.__sortContours(x))
+    npaContours.sort(key=lambda x: Trainer.__sortContours(x))
 
 
     # Create ContourWithData objects for each contour
