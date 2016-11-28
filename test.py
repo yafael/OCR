@@ -18,7 +18,7 @@ MAX_ASPECT_RATIO = 3.9
 
 
 # Flags
-showImages = True
+showImages = False
 showContourOrder = True
 
 def __getTrainedKNearest():
@@ -214,13 +214,14 @@ def recognizeCharacters(fileName):
 	return text
 
 def main():
-	# TODO: Rename this class something else, like Main or OCR
+	'''
 	print recognizeCharacters("testdata/couriernew_all.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
 	print recognizeCharacters("testdata/couriernew_helloworld2_upper.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_mixed.png")
 	print recognizeCharacters("testdata/licenseplate_upper+digits.png")
 	print recognizeCharacters("testdata/tnr_helloworld_lower.png")
+	'''
 	print recognizeCharacters("handwrittendata/kyla.jpg")
 
 if __name__ == "__main__":

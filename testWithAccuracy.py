@@ -7,34 +7,64 @@ import test
 
 # Files and Directory
 TEST_DATA_DIR = "./testdata"
-HANDWRITTEN_DATA_DIR = "./handwrittendata"
 TEST_DATA_EXPECTED = './accuracydata/testdata_expected_output.txt'
+
+HANDWRITTEN_DATA_DIR = "./handwrittendata"
+HANDWRITTEN_DATA_EXPECTED = './accuracydata/handwritten_expected_output.txt'
+
+# Flags
+showIndividualResults = False
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
-def main():
-    testdata_files, testdata_expected = [], []
+def getListOfSimilarityScores(files, expected, actual):
+    similarityList = []
+    for i in range(len(files)):
+        similarity = similar(expected[i], actual[i])
+        similarityList.append(similarity)
+    return similarityList
 
-    with open(TEST_DATA_EXPECTED, "r") as filestream:
+
+def getListOfActualOutput(imgFiles):
+    actualList = []
+    for f in imgFiles:
+        actual = test.recognizeCharacters(f)
+        actualList.append(actual)
+    return actualList
+
+def printResults(files, expected, actual, similarity):
+    if (showIndividualResults):
+        for i in range(len(files)):
+            print "[%s] \nExpected = %s\nActual = %s \nSimilarity = %f\n" % (files[i], expected[i], actual[i], similarity[i])
+    print "Average Similarity = %f" % np.mean(similarity)
+    print "Standard Deviation Similarity = %f" % np.std(similarity)
+
+def getFilesAndExpectedValues(fileToExpected, dir):
+    files, expected = [], []
+    with open(fileToExpected, "r") as filestream:
         for line in filestream:
             row = line.split(",")
-            testdata_files.append(os.path.join(TEST_DATA_DIR, row[0]))
-            testdata_expected.append(row[1].replace('\"', '').rstrip())
+            files.append(os.path.join(dir, row[0]))
+            expected.append(row[1].replace('\"', '').rstrip())
+    return files, expected
 
-    similarityList = []
-    for i in range(len(testdata_files)):
-        f = testdata_files[i]
-        expected = testdata_expected[i]
-        actual = test.recognizeCharacters(f)
-        similarity = similar(expected, actual)
-        similarityList.append(similarity)
-        print "[%s] \nExpected = %s\nActual = %s \nSimilarity = %f\n" % (f, expected, actual, similarity)
+def main():
+    # TEST DATA
 
-    meanSimilarity = np.mean(similarityList)
-    stdDevSimilarity = np.std(similarityList)
-    print "Average Similarity = %f" % meanSimilarity
-    print "Standard Deviation Similarity = %f" % stdDevSimilarity
+    testdata_files, testdata_expected = getFilesAndExpectedValues(TEST_DATA_EXPECTED, TEST_DATA_DIR)
+    testdata_actual = getListOfActualOutput(testdata_files)
+    testdata_similarity = getListOfSimilarityScores(testdata_files, testdata_expected, testdata_actual)
+    print "#### TYPEWRITTEN DATA ####"
+    printResults(testdata_files, testdata_expected, testdata_actual, testdata_similarity)
+
+    # HANDWRITTEN DATA
+    handwrittendata_files, handwrittendata_expected = getFilesAndExpectedValues(HANDWRITTEN_DATA_EXPECTED, HANDWRITTEN_DATA_DIR)
+    handwrittendata_actual = getListOfActualOutput(handwrittendata_files)
+    handwrittendata_similarity = getListOfSimilarityScores(handwrittendata_files, handwrittendata_expected, handwrittendata_actual)
+    print "\n#### HANDWRITTEN DATA ####"
+    printResults(handwrittendata_files, handwrittendata_expected, handwrittendata_actual, handwrittendata_similarity)
+
 
 if __name__ == "__main__":
 	main()
