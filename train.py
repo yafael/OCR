@@ -23,12 +23,12 @@ def classifyImage(trainingImageName, classificationArray):
 	# read in training image and apply preprocessing functions
 	trainingImg = cv2.imread(trainingImageName)
 	grayImg = cv2.cvtColor(trainingImg, cv2.COLOR_BGR2GRAY)
-	threshImg = cv2.adaptiveThreshold(grayImg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+	blurImg = cv2.blur(grayImg,(5,5))
+	threshImg = cv2.adaptiveThreshold(blurImg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 	cv2.imshow("threshImg", threshImg)
-	threshImgCopy = threshImg.copy()
 
 	# find and sort contours
-	contours, hierarchy = cv2.findContours(threshImgCopy, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours, hierarchy = cv2.findContours(threshImg.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	contours.sort(key=lambda x: help.sortContours(x))
 	
 	# declare empty array with size equal to number of training data samples
@@ -69,6 +69,10 @@ def classifyImage(trainingImageName, classificationArray):
 				# flatten contour to 1D and append to training data
 				contourImgFlatten = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
 				trainingdata = np.append(trainingdata, contourImgFlatten,0)
+
+				# ~~~~~~~~ THIS IS USED TO SHOW ORDER OF CONTOURS ~~~~~~~~~~ #
+# 				cv2.imshow("testImage", trainingImg)
+# 				cv2.waitKey(0)
 		
 	# convert classifications list of ints to numpy array of floats
 	floatClassifications = np.array(classificationArray, np.float32)
@@ -106,7 +110,12 @@ classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
 classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
 classifyImage("traindata/couriernew_numbers.png", numbers_labels)
 
-classifyImage("traindata/arial_lowercase.png", lowercase_labels)
-classifyImage("traindata/arial_uppercase.png", uppercase_labels)
-classifyImage("traindata/arial_numbers.png", numbers_labels)
+classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
+classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
+
+
+
+# classifyImage("traindata/arial_lowercase.png", lowercase_labels)
+# classifyImage("traindata/arial_uppercase.png", uppercase_labels)
+# classifyImage("traindata/arial_numbers.png", numbers_labels)
 

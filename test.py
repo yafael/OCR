@@ -1,8 +1,10 @@
 import cv2
 import numpy as np
 import helperfunctions as help
+import math
 
 MIN_CONTOUR_AREA = 100
+MIN_BOX_AREA_DIFF = 1700
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
@@ -35,11 +37,13 @@ def findContours(testFileName):
 	# read in testing image and apply preprocessing functions
 	testImage = cv2.imread(testFileName)
 	testImGray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
-	imgThresh = cv2.adaptiveThreshold(testImGray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
-	imgThreshCopy = imgThresh.copy() 
+	testImBlur = cv2.blur(testImGray,(5,5))
+	imgThresh = cv2.adaptiveThreshold(testImBlur , 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
+	cv2.imshow("imgThresh", imgThresh)
+	cv2.waitKey(0)
 	
 	# find and sort contours
-	contours, heierachy = cv2.findContours(imgThreshCopy,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	contours, heierachy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	contours.sort(key=lambda x: help.sortContours(x))
 
 	# initialize variables
@@ -47,14 +51,29 @@ def findContours(testFileName):
 	characterContourList = []
 	
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# TODO GET MEAN CONTOUR AREA AND ADD THRESHOLD BETWEEN MEAN AND CURRENT TO FILTER CONTOURS
+	# TODO GET MEAN BOUNDED BOX AREA AND ADD THRESHOLD BETWEEN MEAN AND CURRENT TO FILTER CONTOURS
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
-	for contour in contours:
-		area = cv2.contourArea(contour) 
 		
+	# first filter by contour area
+	for contour in contours:		
 		if cv2.contourArea(contour) > MIN_CONTOUR_AREA:
 			characterContourList.append(contour)
 	
+	# get mean box area from good contours
+	meanBoxArea = 0
+	for contour in characterContourList:
+		[x, y, width, height] = cv2.boundingRect(contour)
+		meanBoxArea += width*height
+	meanBoxArea = meanBoxArea / len(characterContourList)
+	print meanBoxArea
+		
+	# second filter by box area
+	for contour in characterContourList:
+		[x, y, width, height] = cv2.boundingRect(contour)
+# 		print abs(width*height - meanBoxArea)
+		if (abs(width*height - meanBoxArea) > MIN_BOX_AREA_DIFF):
+			characterContourList.remove(contour)
+			
 	# get mean distance between contours
 	nextChar = ""
 	distanceList = []
@@ -87,6 +106,7 @@ def findContours(testFileName):
 		currentChar = str(chr(int(ret)))
 		finalString = finalString + currentChar
 		
+		# ~~~~~~~~ THIS IS USED TO SHOW ORDER OF CONTOURS ~~~~~~~~~~ #
 		cv2.imshow("testImage", testImage)
 		cv2.waitKey(0)
 
@@ -100,6 +120,8 @@ def findContours(testFileName):
 			
 	print "\n" + finalString + "\n"
 
+	cv2.imshow("testImage", testImage)
+	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 			
 	return finalString
@@ -107,7 +129,7 @@ def findContours(testFileName):
 # ====================
 # run findContours on multiple images
 # ====================
-findContours("testdata/couriernew_test.png")
-findContours("testdata/couriernew_helloworld.png")
-findContours("testdata/tnr_helloworld.png")
+# findContours("testdata/couriernew_test.png")
+# findContours("testdata/couriernew_helloworld.png")
+# findContours("testdata/tnr_helloworld.png")
 findContours("handwrittendata/real2.jpg")
