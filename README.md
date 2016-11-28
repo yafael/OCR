@@ -2,7 +2,7 @@
 
 This program recognizes handwritten Latin characters and digits using criteria obtained from training data.
 
-## How to Run
+## Run the Program
 
 ### Environment Setup
 Download the following packages
@@ -21,7 +21,14 @@ In the Scripts folder, run the following commands:
 
 > pip install pyparsing
 
-### Files
+### Commands
+Classify training data
+> python train.py
+Recognize characters in images
+> python test.py
+
+You can run both train and test files using
+> python demo.py
 
 
 ## Workflow
