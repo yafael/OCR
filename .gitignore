@@ -1,5 +1,6 @@
 # Folders
 .idea/*
+.archive/*
 
 # File Types
 *.pyc

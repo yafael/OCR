@@ -16,9 +16,8 @@ MIN_CONTOUR_AREA = 100
 MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
-
 # Flags
-showImages = True
+showImages = False
 showContourOrder = False
 
 def __getTrainedKNearest():
