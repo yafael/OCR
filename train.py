@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import cv2
-import helperfunctions as help
+import ContourHelper as help
 
 # Constants
 MIN_CONTOUR_AREA = 30
@@ -49,7 +49,7 @@ def classifyImage(trainingImageName, classificationArray):
 
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(threshImg.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-	contours.sort(key=lambda x: help.sortContours(x))
+	contours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
 	
 	# declare empty array with size equal to number of training data samples
 	trainingdata = np.empty((0, RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
