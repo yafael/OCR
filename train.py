@@ -14,7 +14,7 @@ TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
 showImages = True # whether to cv2.imshow() the results
-showContourOrder = True # whether to show order of contours being classified
+showContourOrder = False # whether to show order of contours being classified
 
 # Classification Labels
 lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
@@ -171,6 +171,8 @@ def main():
 	classifyImage("traindata/comicsans_numbers.png", numbers_labels)
 	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
 	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+	classifyImage("traindata/helvetica_uppercase.png", uppercase_labels)
+	classifyImage("traindata/helvetica_numbers.png", numbers_labels)
 	classifyImage("traindata/TNR_uppercase.png", uppercase_labels)
 	classifyImage("traindata/TNR_numbers.png", numbers_labels)
 	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
