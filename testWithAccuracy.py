@@ -13,7 +13,7 @@ HANDWRITTEN_DATA_DIR = "./handwrittendata"
 HANDWRITTEN_DATA_EXPECTED = './accuracydata/handwritten_expected_output.txt'
 
 # Flags
-showIndividualResults = False
+showIndividualResults = True
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()

@@ -17,7 +17,7 @@ MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
 # Flags
-showImages = False
+showImages = True
 showContourOrder = False
 
 def __getTrainedKNearest():
@@ -198,11 +198,11 @@ def recognizeCharacters(fileName):
 	# find character contours for characters and sort from upper left to lower right
 	allContours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	allContours.sort(key=lambda x: help.sortContoursUpperLeftToLowerRight(x))
-	# characterContourList = __filterForCharacterContours(allContours)
+	characterContourList = __filterForCharacterContours(allContours)
 
 	kNearest = __getTrainedKNearest()
 	# remember to change allContours to characterContourList
-	text = __getStringFromCharacterContours(testImage, imgThresh, allContours, kNearest)
+	text = __getStringFromCharacterContours(testImage, imgThresh, characterContourList, kNearest)
 
 	if showImages:
 		cv2.imshow("testImage", testImage)
@@ -220,8 +220,11 @@ def main():
 	print recognizeCharacters("testdata/couriernew_helloworld_mixed.png")
 	print recognizeCharacters("testdata/licenseplate_upper+digits.png")
 	print recognizeCharacters("testdata/tnr_helloworld_lower.png")
-	'''
 	print recognizeCharacters("handwrittendata/kyla.jpg")
-
+	'''
+	print recognizeCharacters("handwrittendata/real1.jpg")
+	print recognizeCharacters("handwrittendata/real2.jpg")
+	print recognizeCharacters("handwrittendata/real3.jpg")
+	print recognizeCharacters("handwrittendata/real4.jpg")
 if __name__ == "__main__":
 	main()

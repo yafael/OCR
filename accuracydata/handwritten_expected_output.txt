@@ -1,2 +1,5 @@
 kyla.jpg,"KYLA BOULDIN"
+real1.jpg, "TEST I LOVE CSE 5524"
 real2.jpg,"I LOVE CSE 5524"
+real3.jpg,"I WOKE UP LIKE THIS"
+real4.jpg,"COLORLESS GREEN IDEAS"
