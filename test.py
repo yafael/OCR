@@ -19,7 +19,7 @@ MIN_ASPECT_RATIO = 0.14
 MAX_ASPECT_RATIO = 4.0
 
 # Flags
-showImages = False
+showImages = True
 showContourOrder = True
 
 def __getTrainedKNearest():
@@ -180,6 +180,7 @@ def printImageCharacters(fileName):
 
 
 def main():
+	# TODO: Rename this class something else, like Main or OCR
 	printImageCharacters("testdata/couriernew_test.png")
 	printImageCharacters("testdata/couriernew_helloworld.png")
 	printImageCharacters("testdata/tnr_helloworld.png")

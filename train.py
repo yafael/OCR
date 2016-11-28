@@ -12,7 +12,7 @@ CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
 
 # Flags
-showImages = False # whether to cv2.imshow() the results
+showImages = True # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
 
 # Classification Labels
