@@ -24,6 +24,7 @@ In the Scripts folder, run the following commands:
 ### Commands
 Classify training data
 > python train.py
+
 Recognize characters in images
 > python test.py
 
