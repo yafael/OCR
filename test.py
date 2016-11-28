@@ -9,14 +9,14 @@ RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
 # Character Contour Criteria
-MIN_WIDTH = 1
+MIN_WIDTH = 2
 MIN_HEIGHT = 5
 
 MIN_CONTOUR_AREA = 100
 MIN_BOX_AREA_DIFF = 1700
 
-MIN_ASPECT_RATIO = 0.14
-MAX_ASPECT_RATIO = 4.0
+MIN_ASPECT_RATIO = 0.15
+MAX_ASPECT_RATIO = 3.9
 
 # Flags
 showImages = True
@@ -59,32 +59,31 @@ def __preprocessImage(img):
 	return imgThresh
 
 
+# TODO: All generalizable, independent contour manipulating methods belong in ContourHelper
 def __filterForCharacterContours(allContours):
     """
-	Eliminates contours that don't match character criteria
-	:param allContours:
-	:return: characterContourList
-	"""
+    Eliminates contours that don't match character criteria
+    :param allContours:
+    :return:
+    """
     characterContourList = []
 
     # TODO: Should we do contour area or box area?
-    # get average contour area
-    areaList = []
-    for i in allContours:
-    	areaList.append(cv2.contourArea(i))
-    meanArea, stdDevArea = 0, 0
-    if (len(areaList) > 0):
-        meanArea = np.mean(areaList)
-        stdDevArea = np.std(areaList)
-
-    # get mean box area
-    meanBoxAreaList = []
-    for contour in characterContourList:
+    # get average contour area and mean box area
+    contourAreaList, meanBoxAreaList = [], []
+    for contour in allContours:
+        contourAreaList.append(cv2.contourArea(contour))
         [x, y, width, height] = cv2.boundingRect(contour)
         meanBoxAreaList.append(width * height)
-    meanBoxArea = 0
+
+    meanContourArea, stdDevContourArea, meanBoxArea, stdDevBoxArea = 0, 0, 0, 0
+
+    if (len(contourAreaList) > 0):
+        meanContourArea = np.mean(contourAreaList)
+        stdDevContourArea = np.std(contourAreaList)
     if (len(meanBoxAreaList) > 0):
         meanBoxArea = np.mean(meanBoxAreaList)
+        stdDevBoxArea = np.std(meanBoxAreaList)
 
     # filter by aspect ratio, area
     for contour in allContours:
@@ -92,14 +91,49 @@ def __filterForCharacterContours(allContours):
         aspectRatio = float(intWidth) / float(intHeight)
 
         if cv2.contourArea(contour) > MIN_CONTOUR_AREA \
-                and abs(cv2.contourArea(i) - meanArea) <= 2 * stdDevArea \
+                and abs(intWidth * intHeight - meanBoxArea) <= 2 * stdDevBoxArea \
                 and MIN_ASPECT_RATIO < aspectRatio < MAX_ASPECT_RATIO:
-            characterContourList.append(contour)
+			characterContourList.append(contour)
 
     # TODO: add more filters
     characterContourList.sort(key=lambda c: help.sortContoursUpperLeftToLowerRight(c))
 
     return characterContourList
+
+
+# TODO: FINISH. CURRENTLY DOESN'T WORK. CALL BEFORE SORTING CHARACTERCONTOURLIST.
+def __removeOverlappingContours(contourList):
+	"""
+	If two contours overlap, remove the smaller, inner one
+	:param contourList:
+	:return: contourListWithRemoval
+	"""
+	contourListWithRemoval = list(contourList)
+
+	for i in range(len(contourList)):
+		for j in range(len(contourList)):
+			if i == j:
+				continue # skip comparison to self
+
+			contourA = contourList[i]
+			contourB = contourList[j]
+			[intX_A, intY_A, intWidth_A, intHeight_A] = cv2.boundingRect(contourA)
+			[intX_B, intY_B, intWidth_B, intHeight_B] = cv2.boundingRect(contourB)
+
+			# If bounding boxes collide, remove the smaller one
+			if intY_A + intHeight_A <= intX_B or \
+				intY_A >= intY_B + intHeight_B or \
+				intX_A + intWidth_A <= intX_B or \
+				intX_A >= intX_B + intY_B:
+				rectArea_A = intWidth_A * intHeight_A
+				rectArea_B = intWidth_B * intHeight_B
+
+				if rectArea_A < rectArea_B and contourA in contourListWithRemoval:
+					contourListWithRemoval.remove(contourA)
+				elif contourB in contourListWithRemoval:
+					contourListWithRemoval.remove(contourB)
+
+	return contourListWithRemoval
 
 
 def __getStringFromCharacterContours(testImage, imgThresh, characterContourList, kNearest):

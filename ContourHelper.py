@@ -85,8 +85,10 @@ def getMeanDistanceBetweenContours(contourList):
         distance = getDistanceBetween(nextChar, contour)
         distanceList.append(distance)
 
-    mean = np.mean(distanceList)
-    stdDev = np.std(distanceList)
+    mean, stdDev = 0, 0
+    if (len(distanceList) > 0):
+        mean = np.mean(distanceList)
+        stdDev = np.std(distanceList)
 
     return mean, stdDev
 
