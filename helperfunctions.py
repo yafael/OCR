@@ -84,26 +84,26 @@ def getIndexOfTittle(contour, letterWithTittle):
 
 def findValidContours(contours):
     """
-    :param contours: List of contours
-    :return: validList Contours that match our criteria for potential characters
+    :param contours: list of contours
+    :return: list of contours that meet our criteria
     """
-	areaList = []
-	validList = []
+    areaList = []
+    validList = []
 
-	for i in contours:
-		areaList.append(cv2.contourArea(i))
+    for i in contours:
+        areaList.append(cv2.contourArea(i))
 
-	meanArea = np.mean(areaList)
-	stdDev = np.std(areaList)
+    meanArea = np.mean(areaList)
+    stdDev = np.std(areaList)
 
-	print "Mean area = %f" %meanArea
-	print "Standard Deviation = %f" % stdDev
+    print "Mean area = %f" % meanArea
+    print "Standard Deviation = %f" % stdDev
 
-	for i in contours:
-		if(abs(cv2.contourArea(i) - meanArea) <= 2*stdDev):
-			validList.append(i)
+    for i in contours:
+        if(abs(cv2.contourArea(i) - meanArea) <= 2*stdDev):
+            validList.append(i)
 
-	return validList
+    return validList
 
 def findValidRectangles(rects):
     """
@@ -111,16 +111,16 @@ def findValidRectangles(rects):
     :param rects:
     :return: validList of rectangles
     """
-	validList = []
+    validList = []
 
-	meanArea = np.mean(rects)
-	stdDev = np.std(rects)
+    meanArea = np.mean(rects)
+    stdDev = np.std(rects)
 
-	print "Mean area = %f" %meanArea
-	print "Standard Deviation = %f" % stdDev
+    print "Mean area = %f" % meanArea
+    print "Standard Deviation = %f" % stdDev
 
-	for i in rects:
-		if(abs(rects[i] - meanArea) <= stdDev):
-			validList.append(i)
+    for i in rects:
+        if(abs(rects[i] - meanArea) <= stdDev):
+            validList.append(i)
 
-	return validList
+    return validList
