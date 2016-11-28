@@ -74,7 +74,7 @@ def getDistanceBetween(charA, charB):
 def getIndexOfTittle(contour, lettersWithTittles):
     """
     :param contour:
-    :param lettersWithTittles: 
+    :param lettersWithTittles:
     :return: i The index of the first contour that has a letter with a tittle
     """
     for i in range(len(lettersWithTittles)):

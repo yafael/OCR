@@ -2,11 +2,40 @@ import cv2
 import numpy as np
 import helperfunctions as help
 
+import train
+
 # Constants
 MIN_CONTOUR_AREA = 100
 MIN_BOX_AREA_DIFF = 1700
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
+
+# Flags
+showImages = False
+showContourOrder = False
+
+def getTrainedKNearest():
+	"""
+	Runs K-Nearest Neighbors classification using classification and training data
+	:return: kNearest object
+	"""
+	try:
+		classificationLabels = np.loadtxt(train.CLASSIFICATION_FILENAME, np.float32)
+	except:
+		print("Can't find classification labels")
+	
+	try:
+		trainingData = np.loadtxt(train.TRAINING_DATA_FILENAME, np.float32)
+	except:
+		print("Can't find training data")
+
+	classificationLabels = classificationLabels.reshape((classificationLabels.size, 1))  # reshape to 1D for train()
+
+	# create KNearest and train
+	kNearest = cv2.KNearest()
+	kNearest.train(trainingData, classificationLabels)
+
+	return kNearest
 
 def findContours(testFileName):
 	"""
@@ -14,24 +43,8 @@ def findContours(testFileName):
 	:param testFileName:
 	:return:
 	"""
-	# load classifications and test data
-	try:
-		classificationLabels = np.loadtxt("classification_labels.txt", np.float32)
-	except:
-		print("Can't find classification labels")
-	
-	try:
-		trainingData = np.loadtxt("training_data.txt", np.float32)
-	except:
-		print("Can't find training data")
-	
-	# reshape classifications to 1d
-	classificationLabels = classificationLabels.reshape((classificationLabels.size, 1))
-	
-	# create KNearest and train
-	kNearest = cv2.KNearest()
-	kNearest.train(trainingData, classificationLabels)
-		
+	kNearest = getTrainedKNearest()
+
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# TODO UPDATE PREPROCESSING FUNCTIONS AND OR PLACE IN HELPER FUNCTIONS
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
@@ -41,8 +54,10 @@ def findContours(testFileName):
 	testImGray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
 	testImBlur = cv2.blur(testImGray,(5,5))
 	imgThresh = cv2.adaptiveThreshold(testImBlur , 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,11,2)
-	cv2.imshow("imgThresh", imgThresh)
-	cv2.waitKey(0)
+
+	if showImages:
+		cv2.imshow("imgThresh", imgThresh)
+		cv2.waitKey(0)
 	
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(imgThresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -110,8 +125,9 @@ def findContours(testFileName):
 		finalString = finalString + currentChar
 		
 		# ~~~~~~~~ THIS IS USED TO SHOW ORDER OF CONTOURS ~~~~~~~~~~ #
-		cv2.imshow("testImage", testImage)
-		cv2.waitKey(0)
+		if showImages and showContourOrder:
+			cv2.imshow("testImage", testImage)
+			cv2.waitKey(0)
 
 		#detect space
 		nextChar = ""
@@ -123,8 +139,10 @@ def findContours(testFileName):
 			
 	print "\n" + finalString + "\n"
 
-	cv2.imshow("testImage", testImage)
-	cv2.waitKey(0)
+	if showImages:
+		cv2.imshow("testImage", testImage)
+		cv2.waitKey(0)
+
 	cv2.destroyAllWindows()
 			
 	return finalString

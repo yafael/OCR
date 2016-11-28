@@ -11,6 +11,7 @@ RESIZED_IMAGE_HEIGHT = 30
 CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
 
+# Flags
 showImages = False # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
 
@@ -91,7 +92,7 @@ def classifyImage(trainingImageName, classificationArray):
 				trainingdata = np.append(trainingdata, contourImgFlatten,0)
 
 				# show order that contours are classified
-				if showContourOrder:
+				if showImages and showContourOrder:
 					cv2.imshow("testImage", trainingImg)
 					cv2.waitKey(0)
 		
