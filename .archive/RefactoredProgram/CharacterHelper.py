@@ -182,7 +182,7 @@ def __findListOfMatchingChars(candidateChar, listOfChars):
             if fltAdj != 0.0:
                 fltAngleInRad = math.atan(fltOpp / fltAdj)
             else:
-                # default if adjacent is 0, to avoid divide-by-zero errors
+                # default if adjacent is 0, to avoid divide-by-zero to-train
                 fltAngleInRad = 1.5708
 
             fltAngleBetweenChars = fltAngleInRad * (180.0 / math.pi) # degrees

@@ -10,9 +10,10 @@ RESIZED_IMAGE_HEIGHT = 30
 
 CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
+TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = True # whether to cv2.imshow() the results
+showImages = False # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
 
 # Classification Labels
@@ -44,8 +45,6 @@ def classifyImage(trainingImageName, classificationArray):
 	grayImg = cv2.cvtColor(trainingImg, cv2.COLOR_BGR2GRAY)
 	blurImg = cv2.blur(grayImg,(5,5))
 	threshImg = cv2.adaptiveThreshold(blurImg, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-	if showImages:
-		cv2.imshow("threshImg", threshImg)
 
 	# find and sort contours
 	contours, hierarchy = cv2.findContours(threshImg.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -85,7 +84,8 @@ def classifyImage(trainingImageName, classificationArray):
 				# resize image and show on original
 				contourImgResized = cv2.resize(contourImg, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
 				if showImages:
-					cv2.imshow("training_numbers", trainingImg)
+					cv2.imshow(trainingImageName + " thresh		olded", threshImg)
+					cv2.imshow(trainingImageName, trainingImg)
 				
 				# flatten contour to 1D and append to training data
 				contourImgFlatten = contourImgResized.reshape((1,RESIZED_IMAGE_WIDTH * RESIZED_IMAGE_HEIGHT))
@@ -93,7 +93,7 @@ def classifyImage(trainingImageName, classificationArray):
 
 				# show order that contours are classified
 				if showImages and showContourOrder:
-					cv2.imshow("testImage", trainingImg)
+					cv2.imshow(trainingImageName, trainingImg)
 					cv2.waitKey(0)
 		
 	# convert classifications list of ints to numpy array of floats
@@ -122,29 +122,21 @@ def main():
 	Classifies training data images with uppercase, lowercase, and number labels
 	:return: void
 	"""
+	open(CLASSIFICATION_FILENAME, 'w').close()
+	open(TRAINING_DATA_FILENAME, 'w').close()
 
-	os.remove(CLASSIFICATION_FILENAME)
-	os.remove(TRAINING_DATA_FILENAME)
-
-	# TODO: Call classifyImage based on filename endings in the train data folder
-	classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
-	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
-	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
-
-	classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
-	classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
-
-	"""
-	classifyImage("traindata/arial_lowercase.png", lowercase_labels)
-	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
-	classifyImage("traindata/arial_numbers.png", numbers_labels)
-	"""
-
-	""" Returning errors
-	classifyImage("traindata/edrienne_lowercase.jpg", lowercase_labels)
-	classifyImage("traindata/edrienne_uppercase.jpg", uppercase_labels)
-	classifyImage("traindata/edrienne_numbers.jpg", numbers_labels)
-	"""
+	for file in os.listdir(TRAIN_DATA_DIR):
+		label = []
+		#if file.endswith("_lowercase.png"):
+		#	label.append(lowercase_labels)
+		if file.endswith("_uppercase.png"):
+			label.append(uppercase_labels)
+		elif file.endswith("_numbers.png"):
+			label.append(numbers_labels)
+		else:
+			continue
+		filePath = os.path.join(TRAIN_DATA_DIR, file)
+		classifyImage(filePath, label)
 
 	return
 

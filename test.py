@@ -1,12 +1,14 @@
+import os
 import cv2
 import numpy as np
 import ContourHelper as help
 
-import Train
+import train
 
 # Constants
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
+K = 2 # for k-NN
 
 # Character Contour Criteria
 MIN_WIDTH = 2
@@ -18,8 +20,12 @@ MIN_BOX_AREA_DIFF = 1700
 MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
+# Directory
+TEST_DATA_DIR = ".\\testdata"
+HANDWRITTEN_DATA_DIR = ".\\handwrittendata"
+
 # Flags
-showImages = True
+showImages = False
 showContourOrder = True
 
 def __getTrainedKNearest():
@@ -28,12 +34,12 @@ def __getTrainedKNearest():
 	:return: kNearest object
 	"""
 	try:
-		classificationLabels = np.loadtxt(Train.CLASSIFICATION_FILENAME, np.float32)
+		classificationLabels = np.loadtxt(train.CLASSIFICATION_FILENAME, np.float32)
 	except:
 		print("Can't find classification labels")
 	
 	try:
-		trainingData = np.loadtxt(Train.TRAINING_DATA_FILENAME, np.float32)
+		trainingData = np.loadtxt(train.TRAINING_DATA_FILENAME, np.float32)
 	except:
 		print("Can't find training data")
 
@@ -91,8 +97,9 @@ def __filterForCharacterContours(allContours):
         aspectRatio = float(intWidth) / float(intHeight)
 
         if cv2.contourArea(contour) > MIN_CONTOUR_AREA \
-                and abs(intWidth * intHeight - meanBoxArea) <= 2 * stdDevBoxArea \
-                and MIN_ASPECT_RATIO < aspectRatio < MAX_ASPECT_RATIO:
+                and abs(intWidth * intHeight - meanBoxArea) <= 3 * stdDevBoxArea \
+                and True:
+			#MIN_ASPECT_RATIO < aspectRatio < MAX_ASPECT_RATIO:
 			characterContourList.append(contour)
 
     # TODO: add more filters
@@ -162,7 +169,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 		letter = np.float32(letter)
 
 		# find k nearest neighbor to determine character
-		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=3)
+		ret, result, neighbors, dist = kNearest.find_nearest(letter, K)
 
 		# append character to string
 		currentChar = str(chr(int(ret)))
@@ -217,8 +224,10 @@ def main():
 	# TODO: Rename this class something else, like Main or OCR
 	printImageCharacters("testdata/couriernew_test.png")
 	printImageCharacters("testdata/couriernew_helloworld.png")
+	printImageCharacters("testdata/couriernew_helloworld_uppercase.png")
 	printImageCharacters("testdata/tnr_helloworld.png")
 	printImageCharacters("handwrittendata/real2.jpg")
+
 
 
 if __name__ == "__main__":
