@@ -6,6 +6,7 @@ import train
 # Constants
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
+K = 3
 
 # Character Contour Criteria
 MIN_WIDTH = 2
@@ -157,7 +158,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 		letter = np.float32(letter)
 
 		# find k nearest neighbor to determine character
-		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=1)
+		ret, result, neighbors, dist = kNearest.find_nearest(letter, k=K)
 
 		# append character to string
 		currentChar = str(chr(int(ret)))

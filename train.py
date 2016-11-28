@@ -132,18 +132,21 @@ def main():
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# TODO Call classifyImage based on filename endings in the train data folder
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
-	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
-	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
-	"""
-	classifyImage("traindata/couriernew_lowercase.png", lowercase_labels)
-
-	classifyImage("traindata/bradleyhand_uppercase.png", uppercase_labels)
-	classifyImage("traindata/bradleyhand_numbers.png", numbers_labels)
-
-	classifyImage("traindata/arial_lowercase.png", lowercase_labels)
 	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
 	classifyImage("traindata/arial_numbers.png", numbers_labels)
-	"""
+	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)
+	classifyImage("traindata/calibri_numbers.png", numbers_labels)
+	classifyImage("traindata/comicsans_uppercase.png", uppercase_labels)
+	classifyImage("traindata/comicsans_numbers.png", numbers_labels)
+	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
+	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
+	classifyImage("traindata/georgia_uppercase.png", uppercase_labels)
+	classifyImage("traindata/georgia_numbers.png", numbers_labels)
+	classifyImage("traindata/TNR_uppercase.png", uppercase_labels)
+	classifyImage("traindata/TNR_numbers.png", numbers_labels)
+	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
+	classifyImage("traindata/verdana_numbers.png", numbers_labels)
+	
 
 	""" Returning errors
 	classifyImage("traindata/edrienne_lowercase.jpg", lowercase_labels)
