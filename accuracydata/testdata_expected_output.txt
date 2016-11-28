@@ -1,0 +1,7 @@
+couriernew_all.png,"123 abc ABC"
+couriernew_helloworld_mixed.png,"Hello World"
+couriernew_helloworld_upper.png,"HELLO WORLD"
+couriernew_helloworld2_upper.png,HELLO WORLD"
+licenseplate_upper+digits.png,"AF83HSK27"
+timesnewroman_digits.png,"614 292 2121"
+tnr_helloworld_lower.png,"hello world"
