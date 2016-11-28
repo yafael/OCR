@@ -13,7 +13,7 @@ TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = True # whether to cv2.imshow() the results
+showImages = False # whether to cv2.imshow() the results
 showContourOrder = True # whether to show order of contours being classified
 
 # Classification Labels
@@ -119,20 +119,9 @@ def main():
 	:return: void
 	"""
 
-	try:
-		os.remove(CLASSIFICATION_FILENAME)
-	except:
-		print("no classification labels")
-	
-	try:
-		os.remove(TRAINING_DATA_FILENAME)
-	except:
-		print("no training data")
-
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# TODO Call classifyImage based on filename endings in the train data folder
 	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
-	'''
 	open(CLASSIFICATION_FILENAME, 'w').close()
 	open(TRAINING_DATA_FILENAME, 'w').close()
 	
@@ -149,18 +138,7 @@ def main():
 			
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
-	'''
-		
-	try:
-		os.remove(CLASSIFICATION_FILENAME)
-	except:
-		print("no classification labels")
-	
-	try:
-		os.remove(TRAINING_DATA_FILENAME)
-	except:
-		print("no training data")
-		
+	"""
 	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
 	classifyImage("traindata/arial_numbers.png", numbers_labels)
 	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)
@@ -175,7 +153,7 @@ def main():
 	classifyImage("traindata/TNR_numbers.png", numbers_labels)
 	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
 	classifyImage("traindata/verdana_numbers.png", numbers_labels)
-
+	"""
 	return
 
 if __name__ == "__main__":
