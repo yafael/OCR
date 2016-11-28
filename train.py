@@ -141,6 +141,8 @@ def main():
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
 	"""
+	classifyImage("traindata/handwriting/kyla_uppercase.jpg", uppercase_labels)
+	classifyImage("traindata/handwriting/kyla_numbers.jpg", numbers_labels)
 	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
 	classifyImage("traindata/arial_numbers.png", numbers_labels)
 	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)

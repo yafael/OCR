@@ -221,6 +221,7 @@ def main():
 	print recognizeCharacters("testdata/multiline.png")
 	print recognizeCharacters("testdata/timesnewroman_digits.png")
 	print recognizeCharacters("handwrittendata/kyla.jpg")
+	print recognizeCharacters("handwrittendata/kyla2.jpg")
 
 if __name__ == "__main__":
 	main()
