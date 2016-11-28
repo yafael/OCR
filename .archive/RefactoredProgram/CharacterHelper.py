@@ -2,12 +2,13 @@
 # Description: Contains different functions dealing with Characters in an image
 # TODO: Derived from tutorial, give credit
 
-import cv2
 import math
+
+import OCR
+import cv2
 import numpy as np
 
 import ImageHelper
-import OCR
 import TextRegionFinder
 import Trainer
 

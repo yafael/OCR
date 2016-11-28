@@ -4,12 +4,12 @@ This program recognizes handwritten Latin characters and digits using criteria o
 
 ## How to Run
 
-### Setup
+### Environment Setup
 Download the following packages
 - Python 2.7.X
 - OpenCV 2.4.X
-- Numpy 1.9.X
-- Matplotlib 1.3.X
+- Numpy 1.9+
+- Matplotlib 1.3+
 
 Make sure all the versions are 32-bit.
 
@@ -21,7 +21,7 @@ In the Scripts folder, run the following commands:
 
 > pip install pyparsing
 
-You should be ready to go.
+### Files
 
 
 ## Workflow
