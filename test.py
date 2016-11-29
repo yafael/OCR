@@ -17,7 +17,7 @@ MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
 # Flags
-showImages = True
+showImages = False
 showContourOrder = False
 
 def __getTrainedKNearest():
@@ -213,18 +213,23 @@ def recognizeCharacters(fileName):
 	return text
 
 def main():
-	'''
+	print recognizeCharacters("handwrittendata/mementomori42.jpg")
+	print recognizeCharacters("handwrittendata/mementomori42_scene.jpg")
 	print recognizeCharacters("testdata/couriernew_all.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
-	print recognizeCharacters("testdata/couriernew_helloworld2_upper.png")
-	print recognizeCharacters("testdata/couriernew_helloworld_mixed.png")
+	print recognizeCharacters("testdata/foobar.png")
 	print recognizeCharacters("testdata/licenseplate_upper+digits.png")
-	print recognizeCharacters("testdata/tnr_helloworld_lower.png")
+	print recognizeCharacters("testdata/multiline_number.png")
+	print recognizeCharacters("testdata/multiline.png")
+	print recognizeCharacters("testdata/timesnewroman_digits.png")
+
 	print recognizeCharacters("handwrittendata/kyla.jpg")
-	'''
+	print recognizeCharacters("handwrittendata/kyla2.jpg")
 	print recognizeCharacters("handwrittendata/real1.jpg")
 	print recognizeCharacters("handwrittendata/real2.jpg")
 	print recognizeCharacters("handwrittendata/real3.jpg")
 	print recognizeCharacters("handwrittendata/real4.jpg")
+
+
 if __name__ == "__main__":
 	main()

@@ -11,10 +11,11 @@ RESIZED_IMAGE_HEIGHT = 30
 CLASSIFICATION_FILENAME = 'classification_labels.txt'
 TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
+TRAIN_DATA_HANDWRITING_DIR = ".\\traindata\\handwriting"
 
 # Flags
 showImages = False # whether to cv2.imshow() the results
-showContourOrder = True # whether to show order of contours being classified
+showContourOrder = False # whether to show order of contours being classified
 checkForTittles = False
 
 # Classification Labels
@@ -140,7 +141,23 @@ def main():
 			
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
+
+	for file in os.listdir(TRAIN_DATA_HANDWRITING_DIR):
+		label = []
+		# if file.endswith("_lowercase.png"):
+		#	label.append(lowercase_labels)
+		if file.endswith("_uppercase.png"):
+			label.append(uppercase_labels)
+		elif file.endswith("_numbers.png"):
+			label.append(numbers_labels)
+		else:
+			continue
+
+		filePath = os.path.join(TRAIN_DATA_HANDWRITING_DIR, file)
+		classifyImage(filePath, label)
 	"""
+	classifyImage("traindata/handwriting/kyla_uppercase.jpg", uppercase_labels)
+	classifyImage("traindata/handwriting/kyla_numbers.jpg", numbers_labels)
 	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
 	classifyImage("traindata/arial_numbers.png", numbers_labels)
 	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)

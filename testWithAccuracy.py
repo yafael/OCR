@@ -36,8 +36,9 @@ def getListOfActualOutput(imgFiles):
 def printResults(files, expected, actual, similarity):
     if (showIndividualResults):
         for i in range(len(files)):
-            print "[%s] \nExpected = %s\nActual = %s \nSimilarity = %f\n" % (files[i], expected[i], actual[i], similarity[i])
-    print "Average Similarity = %f" % np.mean(similarity)
+            # print ["%s"] % files[i]
+            print "\nExpected = %s\nActual = %s \nSimilarity = %f" % (expected[i], actual[i], similarity[i])
+    print "\nAverage Similarity = %f" % np.mean(similarity)
     print "Standard Deviation Similarity = %f" % np.std(similarity)
 
 def getFilesAndExpectedValues(fileToExpected, dir):
@@ -51,13 +52,13 @@ def getFilesAndExpectedValues(fileToExpected, dir):
 
 def main():
     # TEST DATA
-
     testdata_files, testdata_expected = getFilesAndExpectedValues(TEST_DATA_EXPECTED, TEST_DATA_DIR)
     testdata_actual = getListOfActualOutput(testdata_files)
     testdata_similarity = getListOfSimilarityScores(testdata_files, testdata_expected, testdata_actual)
     print "#### TYPEWRITTEN DATA ####"
     printResults(testdata_files, testdata_expected, testdata_actual, testdata_similarity)
 
+    test.showImages = False
     # HANDWRITTEN DATA
     handwrittendata_files, handwrittendata_expected = getFilesAndExpectedValues(HANDWRITTEN_DATA_EXPECTED, HANDWRITTEN_DATA_DIR)
     handwrittendata_actual = getListOfActualOutput(handwrittendata_files)
