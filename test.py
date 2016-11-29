@@ -17,7 +17,7 @@ MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
 # Flags
-showImages = False
+showImages = True
 showContourOrder = False
 
 def __getTrainedKNearest():
@@ -89,8 +89,8 @@ def __filterForCharacterContours(allContours):
 
         if cv2.contourArea(contour) > MIN_CONTOUR_AREA \
                 and abs(intWidth * intHeight - meanBoxArea) <= 3 * stdDevBoxArea \
+				and MIN_ASPECT_RATIO < aspectRatio < MAX_ASPECT_RATIO \
                 and True:
-			#MIN_ASPECT_RATIO < aspectRatio < MAX_ASPECT_RATIO:
 			characterContourList.append(contour)
 
     # TODO: add more filters
@@ -213,8 +213,7 @@ def recognizeCharacters(fileName):
 	return text
 
 def main():
-	print recognizeCharacters("handwrittendata/mementomori42.jpg")
-	print recognizeCharacters("handwrittendata/mementomori42_scene.jpg")
+
 	print recognizeCharacters("testdata/couriernew_all.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
 	print recognizeCharacters("testdata/foobar.png")
@@ -222,7 +221,7 @@ def main():
 	print recognizeCharacters("testdata/multiline_number.png")
 	print recognizeCharacters("testdata/multiline.png")
 	print recognizeCharacters("testdata/timesnewroman_digits.png")
-	
+
 	print recognizeCharacters("testdata/handwritten/kyla_letters.jpg")
 	print recognizeCharacters("testdata/handwritten/kyla_mix.jpg")
 	print recognizeCharacters("testdata/handwritten/kyla_numbers.jpg")

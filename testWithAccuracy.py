@@ -1,4 +1,4 @@
-import os
+import os, sys, getopt
 import numpy as np
 
 from difflib import SequenceMatcher
@@ -9,11 +9,11 @@ import test
 TEST_DATA_DIR = "./testdata"
 TEST_DATA_EXPECTED = './accuracydata/testdata_expected_output.txt'
 
-HANDWRITTEN_DATA_DIR = "./handwrittendata"
+HANDWRITTEN_DATA_DIR = "./testdata/handwritten"
 HANDWRITTEN_DATA_EXPECTED = './accuracydata/handwritten_expected_output.txt'
 
 # Flags
-showIndividualResults = True
+showIndividualResults = False
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -50,22 +50,40 @@ def getFilesAndExpectedValues(fileToExpected, dir):
             expected.append(row[1].replace('\"', '').rstrip())
     return files, expected
 
-def main():
-    # TEST DATA
+def main(argv):
+    try:
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+    except getopt.GetoptError:
+        print 'test.py -i <inputfile> -o <outputfile>'
+        sys.exit(2)
+
+    # Default
+    test.K = 2
+    test.showImages = False
+    showIndividualResults = False
+
+    # Check args
+    for opt, arg in opts:
+        if opt in ("-k"):
+            test.K = arg
+        elif opt in ("-i", "--showImages"):
+            test.showImages = True
+        elif opt in ("-r", "--results"):
+            showIndividualResults = True
+
+
+    print "#### TYPEWRITTEN DATA ####"
     testdata_files, testdata_expected = getFilesAndExpectedValues(TEST_DATA_EXPECTED, TEST_DATA_DIR)
     testdata_actual = getListOfActualOutput(testdata_files)
     testdata_similarity = getListOfSimilarityScores(testdata_files, testdata_expected, testdata_actual)
-    print "#### TYPEWRITTEN DATA ####"
     printResults(testdata_files, testdata_expected, testdata_actual, testdata_similarity)
 
-    test.showImages = False
-    # HANDWRITTEN DATA
+    print "\n#### HANDWRITTEN DATA ####"
     handwrittendata_files, handwrittendata_expected = getFilesAndExpectedValues(HANDWRITTEN_DATA_EXPECTED, HANDWRITTEN_DATA_DIR)
     handwrittendata_actual = getListOfActualOutput(handwrittendata_files)
     handwrittendata_similarity = getListOfSimilarityScores(handwrittendata_files, handwrittendata_expected, handwrittendata_actual)
-    print "\n#### HANDWRITTEN DATA ####"
     printResults(handwrittendata_files, handwrittendata_expected, handwrittendata_actual, handwrittendata_similarity)
 
-
+# Run testWithAccuracy
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])
