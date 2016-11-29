@@ -3,7 +3,7 @@ import numpy as np
 
 from difflib import SequenceMatcher
 
-import test, train
+import test
 
 # Files and Directory
 TEST_DATA_DIR = "./testdata"
@@ -13,7 +13,9 @@ HANDWRITTEN_DATA_DIR = "./testdata/handwritten"
 HANDWRITTEN_DATA_EXPECTED = './accuracydata/handwritten_expected_output.txt'
 
 # Flags
-showIndividualResults = False
+showIndividualResults = True
+showImages = True
+K = 3
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -58,21 +60,19 @@ def main(argv):
         sys.exit(2)
 
     # Default
-    test.K = 2
-    test.showImages = False
-    train.showImages = False
-    showIndividualResults = False
+    test.K = K
+    test.showImages = showImages
 
+    """
     # Check args
     for opt, arg in opts:
         if opt in ("-k"):
             test.K = arg
         elif opt in ("-i", "--showImages"):
             test.showImages = True
-            train.showImages = True
         elif opt in ("-r", "--results"):
             showIndividualResults = True
-
+    """
 
     print "K = %d" % test.K
     print "#### TYPEWRITTEN DATA ####"
