@@ -72,6 +72,7 @@ def main(argv):
             showIndividualResults = True
 
 
+    print "K = %d" % test.K
     print "#### TYPEWRITTEN DATA ####"
     testdata_files, testdata_expected = getFilesAndExpectedValues(TEST_DATA_EXPECTED, TEST_DATA_DIR)
     testdata_actual = getListOfActualOutput(testdata_files)
