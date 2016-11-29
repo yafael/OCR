@@ -128,14 +128,14 @@ def main():
 	open(CLASSIFICATION_FILENAME, 'w').close()
 	open(TRAINING_DATA_FILENAME, 'w').close()
 	
-	for file in os.listdir(TRAIN_DATA_DIR):
+	for file in os.listdir(os.path.expanduser(TRAIN_DATA_DIR)):
 		label = []
 		#if file.endswith("_lowercase.png"):
 			#	label.append(lowercase_labels)
 		if file.endswith("_uppercase.png"):
-			label.append(uppercase_labels)
+			label = uppercase_labels
 		elif file.endswith("_numbers.png"):
-			label.append(numbers_labels)
+			label = numbers_labels
 		else:
 			continue
 			

@@ -222,14 +222,16 @@ def main():
 	print recognizeCharacters("testdata/multiline_number.png")
 	print recognizeCharacters("testdata/multiline.png")
 	print recognizeCharacters("testdata/timesnewroman_digits.png")
+	
+	print recognizeCharacters("testdata/handwritten/kyla_letters.jpg")
+	print recognizeCharacters("testdata/handwritten/kyla_mix.jpg")
+	print recognizeCharacters("testdata/handwritten/kyla_numbers.jpg")
+	print recognizeCharacters("testdata/handwritten/licenseplate.jpg")
 
-	print recognizeCharacters("handwrittendata/kyla.jpg")
-	print recognizeCharacters("handwrittendata/kyla2.jpg")
-	print recognizeCharacters("handwrittendata/real1.jpg")
-	print recognizeCharacters("handwrittendata/real2.jpg")
-	print recognizeCharacters("handwrittendata/real3.jpg")
-	print recognizeCharacters("handwrittendata/real4.jpg")
-
+	print recognizeCharacters("testdata/handwritten/real1.jpg")
+	print recognizeCharacters("testdata/handwritten/real2.jpg")
+	print recognizeCharacters("testdata/handwritten/real3.jpg")
+	print recognizeCharacters("testdata/handwritten/real4.jpg")
 
 if __name__ == "__main__":
 	main()
