@@ -3,7 +3,7 @@ import numpy as np
 
 from difflib import SequenceMatcher
 
-import test
+import test, train
 
 # Files and Directory
 TEST_DATA_DIR = "./testdata"
@@ -60,6 +60,7 @@ def main(argv):
     # Default
     test.K = 2
     test.showImages = False
+    train.showImages = False
     showIndividualResults = False
 
     # Check args
@@ -68,6 +69,7 @@ def main(argv):
             test.K = arg
         elif opt in ("-i", "--showImages"):
             test.showImages = True
+            train.showImages = True
         elif opt in ("-r", "--results"):
             showIndividualResults = True
 

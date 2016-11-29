@@ -13,7 +13,7 @@ TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = False # whether to cv2.imshow() the results
+showImages = True # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
 checkForTittles = False
 

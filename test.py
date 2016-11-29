@@ -18,7 +18,7 @@ MAX_ASPECT_RATIO = 3.9
 
 # Flags
 showImages = True
-showContourOrder = False
+showContourOrder = True
 
 def __getTrainedKNearest():
 	"""
