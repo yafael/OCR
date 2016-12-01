@@ -21,8 +21,8 @@ MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
 # Flags
-showImages = False
-showContourOrder = False
+showImages = True
+showContourOrder = True
 
 def __getTrainedKNearest():
 	"""
@@ -168,6 +168,7 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 
 		# append character to string
 		currentChar = str(chr(int(ret)))
+		print currentChar
 		finalString = finalString + currentChar
 
 		# detect space
@@ -216,6 +217,8 @@ def recognizeCharacters(fileName):
 
 def main():
 	# Hard-coded testing
+	print recognizeCharacters("testdata/handwritten/real3.jpg")
+	"""
 	print recognizeCharacters("testdata/couriernew_all.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
 	print recognizeCharacters("testdata/foobar.png")
@@ -233,6 +236,6 @@ def main():
 	print recognizeCharacters("testdata/handwritten/real2.jpg")
 	print recognizeCharacters("testdata/handwritten/real3.jpg")
 	print recognizeCharacters("testdata/handwritten/real4.jpg")
-
+	"""
 if __name__ == "__main__":
 	main()

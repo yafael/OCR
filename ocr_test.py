@@ -17,7 +17,7 @@ HANDWRITTEN_DATA_EXPECTED = './expectedoutput/handwritten_expected_output.txt'
 
 # Flags and Values
 showIndividualResults = False
-showImages = False
+showImages = True
 K = 2
 
 def __getSimilarityScore(expected, actual):
