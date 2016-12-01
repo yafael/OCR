@@ -2,9 +2,7 @@
 
 This program recognizes handwritten Latin characters and digits using criteria obtained from training data.
 
-## Run the Program
-
-### Environment Setup
+## Environment Setup
 Download the following packages
 - Python 2.7.X
 - OpenCV 2.4.X
@@ -13,24 +11,22 @@ Download the following packages
 
 Make sure all the versions are 32-bit.
 
-Download the [get-pip.py](https://bootstrap.pypa.io/get-pip.py) Python script and put it in your C:/Python27/Scripts folder. From the Scripts directory, run
-> python get-pip
+On Windows: If you're having trouble, try installing using the pip command. If you don't have pip, run this [get-pip.py](https://bootstrap.pypa.io/get-pip.py) Python script in your C:/Python27/Scripts folder. You can now call pip from the command line in that directory.
 
-In the Scripts folder, run the following commands:
-> pip install python-dateutil
-
-> pip install pyparsing
-
-### Commands
-Classify training data
+## Running our program
+Create classifications from training data
 > python train.py
 
-Recognize characters in images
+Run our OCR algorithm on our test images 
 > python test.py
 
-You can run both train and test files using
-> python demo.py
+Run our OCR algorithm on our test images and compare results with expected output
+> python testWithAccuracy.py
 
+You must run the training file before running any tests.
+
+## Presentation and Documents
+Our Google Slides presentation [here](http://go.osu.edu/ocr-5524).
 
 ## Workflow
 
@@ -40,6 +36,5 @@ The project is divided into features, or tasks. We will manage tasks using the f
 ### Other Guidelines
 - Make sure to have good descriptions for your commits. 
 - Comments are appreciated.
-- Balance code readability with concision.
 - Try and refer to Google's [Python Style Guide](https://google.github.io/styleguide/pyguide.html#Comments)
 
