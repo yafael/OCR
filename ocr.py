@@ -1,6 +1,9 @@
+# ocr.py
+# Contributors: Kyla, Edrienne
+
 import cv2
 import numpy as np
-import ContourHelper as help
+import contour_helper as help
 
 import train
 
@@ -17,7 +20,7 @@ MIN_ASPECT_RATIO = 0.15
 MAX_ASPECT_RATIO = 3.9
 
 # Flags
-showImages = True
+showImages = False
 showContourOrder = False
 
 def __getTrainedKNearest():
@@ -50,22 +53,22 @@ def __preprocessImage(img):
 	:param img:
 	:return: imgThresh Binarized image
 	"""
+	# TODO: Look into more preprocessing algorithms.
 	imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	imgBlur = cv2.blur(imgGray, (5, 5))
 	imgThresh = cv2.adaptiveThreshold(imgBlur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 	return imgThresh
 
 
-# TODO: All generalizable, independent contour manipulating methods belong in ContourHelper
+# TODO: Move all generalizable, independent contour manipulating methods belong in ContourHelper
 def __filterForCharacterContours(allContours):
     """
     Eliminates contours that don't match character criteria
     :param allContours:
-    :return:
     """
     characterContourList = []
 
-    # TODO: Should we do contour area or box area?
+    # TODO: Evaluate whether it's worth checking contour area at all
     # get average contour area and mean box area
     contourAreaList, meanBoxAreaList = [], []
     for contour in allContours:
@@ -93,13 +96,13 @@ def __filterForCharacterContours(allContours):
                 and True:
 			characterContourList.append(contour)
 
-    # TODO: add more filters
+    # TODO: Research more geometric filters we can apply and other methods people use
     characterContourList.sort(key=lambda c: help.sortContoursUpperLeftToLowerRight(c))
 
     return characterContourList
 
 
-# TODO: FINISH. CURRENTLY DOESN'T WORK. CALL BEFORE SORTING CHARACTERCONTOURLIST.
+# TODO: Debug! Not working for all cases.
 def __removeOverlappingContours(contourList):
 	"""
 	If two contours overlap, remove the smaller, inner one
@@ -179,7 +182,8 @@ def __getStringFromCharacterContours(testImage, imgThresh, characterContourList,
 			cv2.waitKey(0)
 
 	return finalString
-	
+
+
 def recognizeCharacters(fileName):
 	"""
 	Runs optical character recognition (OCR) algorithm to detect and print characters in an image.
@@ -197,7 +201,6 @@ def recognizeCharacters(fileName):
 	characterContourList = __filterForCharacterContours(allContours)
 
 	kNearest = __getTrainedKNearest()
-	# remember to change allContours to characterContourList
 	text = __getStringFromCharacterContours(testImage, imgThresh, characterContourList, kNearest)
 
 	if showImages:
@@ -209,8 +212,9 @@ def recognizeCharacters(fileName):
 			
 	return text
 
-def main():
 
+def main():
+	# Hard-coded testing
 	print recognizeCharacters("testdata/couriernew_all.png")
 	print recognizeCharacters("testdata/couriernew_helloworld_upper.png")
 	print recognizeCharacters("testdata/foobar.png")

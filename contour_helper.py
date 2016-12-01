@@ -1,6 +1,6 @@
-# ====================
-# Functions for manipulating contours
-# ====================
+# contour_helper.py
+# Helper functions for dealing with contours
+# Contributors: Kyla, Edrienne, Yash
 
 import cv2
 import math
@@ -38,9 +38,6 @@ def detectTittles(contour1, contour2):
     if mom1["m00"] != 0:
         x1 = int(mom1["m10"] / mom1["m00"])
         x2 = int(mom1["m01"] / mom1["m00"])
-
-    # y1 = int(mom1['m01'] / mom1['m00'])
-    # y2 = int(mom2['m01'] / mom2['m00'])
 
     if (abs(x1 - x2) < tolerance_factor):
         return True

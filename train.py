@@ -1,7 +1,11 @@
+# train.py
+# Given training images, Produces training data and classification files for A-Z, 0-9 characters.
+# Contributors: Kyla (main), Edrienne
+
 import os
 import numpy as np
 import cv2
-import ContourHelper as help
+import contour_helper as help
 
 # Constants
 MIN_CONTOUR_AREA = 100
@@ -13,9 +17,9 @@ TRAINING_DATA_FILENAME = 'training_data.txt'
 TRAIN_DATA_DIR = ".\\traindata"
 
 # Flags
-showImages = True # whether to cv2.imshow() the results
+showImages = False # whether to cv2.imshow() the results
 showContourOrder = False # whether to show order of contours being classified
-checkForTittles = False
+checkForTittles = False # Keep False until lowercase letters trained
 
 # Classification Labels
 lowercase_labels = [ord('a'), ord('b'), ord('c'), ord('d'), ord('e'), ord('f'), ord('g'), ord('h'), ord('i'), ord('j'),
@@ -26,12 +30,12 @@ uppercase_labels = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), 
 	ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
 numbers_labels = [ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), ord('8'), ord('9')]
 
+
 def classifyImage(trainingImageName, classificationArray):
 	"""
 	Produce training data and classification files given filename and classification array
 	:param trainingImageName:
 	:param classificationArray:
-	:return:
 	"""
 	# open or create classification and training data files
 	classificationFile = file(CLASSIFICATION_FILENAME, 'a')
@@ -116,21 +120,13 @@ def classifyImage(trainingImageName, classificationArray):
 
 
 def main():
-	"""
-	Classifies training data images with uppercase, lowercase, and number labels
-	:return: void
-	"""
+	""" Classifies training data images with uppercase and number labels """
 
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# TODO Call classifyImage based on filename endings in the train data folder
-	# ~~~~~~~~~~~~~~~~~~~~~~~~~~	 
 	open(CLASSIFICATION_FILENAME, 'w').close()
 	open(TRAINING_DATA_FILENAME, 'w').close()
-	
+
 	for file in os.listdir(os.path.expanduser(TRAIN_DATA_DIR)):
 		label = []
-		#if file.endswith("_lowercase.png"):
-			#	label.append(lowercase_labels)
 		if file.endswith("_uppercase.png"):
 			label = uppercase_labels
 		elif file.endswith("_numbers.png"):
@@ -141,26 +137,6 @@ def main():
 		filePath = os.path.join(TRAIN_DATA_DIR, file)
 		classifyImage(filePath, label)
 
-	"""
-	classifyImage("traindata/handwriting/kyla_uppercase.jpg", uppercase_labels)
-	classifyImage("traindata/handwriting/kyla_numbers.jpg", numbers_labels)
-	classifyImage("traindata/arial_uppercase.png", uppercase_labels)
-	classifyImage("traindata/arial_numbers.png", numbers_labels)
-	classifyImage("traindata/calibri_uppercase.png", uppercase_labels)
-	classifyImage("traindata/calibri_numbers.png", numbers_labels)
-	classifyImage("traindata/chalkboard_uppercase.png", uppercase_labels)
-	classifyImage("traindata/chalkboard_numbers.png", numbers_labels)
-	classifyImage("traindata/comicsans_uppercase.png", uppercase_labels)
-	classifyImage("traindata/comicsans_numbers.png", numbers_labels)
-	classifyImage("traindata/couriernew_uppercase.png", uppercase_labels)
-	classifyImage("traindata/couriernew_numbers.png", numbers_labels)
-	classifyImage("traindata/helvetica_uppercase.png", uppercase_labels)
-	classifyImage("traindata/helvetica_numbers.png", numbers_labels)
-	classifyImage("traindata/TNR_uppercase.png", uppercase_labels)
-	classifyImage("traindata/TNR_numbers.png", numbers_labels)
-	classifyImage("traindata/verdana_uppercase.png", uppercase_labels)
-	classifyImage("traindata/verdana_numbers.png", numbers_labels)
-	"""
 	return
 
 if __name__ == "__main__":
