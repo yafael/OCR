@@ -1,4 +1,4 @@
-# testWithAccuracy.py
+# ocr_test.py
 # Runs OCR on test images and compares actual output to expected output.
 # Contributors: Edrienne
 

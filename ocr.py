@@ -1,4 +1,5 @@
 # ocr.py
+# Runs OCR algorithm
 # Contributors: Kyla, Edrienne
 
 import cv2
